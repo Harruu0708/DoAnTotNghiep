@@ -24,7 +24,7 @@ const Shop = () => {
       item !==value):[...prev, value]) 
   }
 
-  const apllyFilters = () => {
+  const applyFilters = () => {
     let filtered = [...books]
 
     if(search){
@@ -50,7 +50,7 @@ const Shop = () => {
   }
 
   useEffect(()=>{
-    let filtered = apllyFilters()
+    let filtered = applyFilters()
     let sorted = applySorting(filtered)
     setFilteredBooks(sorted)
     setCurrentPage(1) // Reset to first page
