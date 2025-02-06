@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import logo from '../assets/logo.png'
 import Navbar from './Navbar'
 import { CgMenuLeft } from 'react-icons/cg'
@@ -9,9 +9,12 @@ import { useContext } from 'react'
 import { ShopContext } from '../context/ShopContext'
 
 
+
 const Header = () => {
     
-    const {navigate,token, setToken} = useContext(ShopContext)
+    const {navigate,token, setToken, getCartCount} = useContext(ShopContext)
+    
+
     const [active, setActive] = useState(false)
     const [menuOpened, setMenuOpened] = useState(false)
     const toggleMenu = () => {
@@ -53,12 +56,12 @@ const Header = () => {
                 <Link to={'cart'} className='flex relative'>
                     <RiShoppingBag4Line className='text-[33px] bg-secondary text-primary p-1.5 rounded-full ' />
                     <span className='bg-primary ring-1 ring-slate-900/5 medium-14 absolute left-5 -top-2.5 flexCenter w-5 h-5 rounded-full shadow-md '>
-                        0
+                        {getCartCount()}
                     </span>
                 </Link>
 
                 <div className='relative group'>
-                    <div onClick={!token && navigate('/')} className=''>
+                    <div onClick={() => !token && navigate('/login')}  className=''>
                         {token ? (
                             <div><TbUserCircle className='text-[29px] cursor-pointer'/></div>
                         ):(

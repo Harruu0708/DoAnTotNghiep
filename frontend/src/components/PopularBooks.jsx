@@ -15,9 +15,9 @@ const PopularBooks = () => {
       {/* <!-- container --> */}
       <div className='grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10'>
         {popularBooks.map(book=>(
-          <diV key={book._id}>
+          <div key={book._id}>
             <Item book={book}/>
-          </diV>
+          </div>
         ))}
       </div>
     </section>

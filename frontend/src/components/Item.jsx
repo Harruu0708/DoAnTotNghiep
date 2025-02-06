@@ -3,7 +3,7 @@ import {TbShoppingBagPlus} from 'react-icons/tb'
 import { ShopContext } from '../context/ShopContext'
 const Item = ({book}) => {
 
-  const {currency} = useContext(ShopContext)
+  const {currency, addToCart} = useContext(ShopContext)
   return (
     <div>
       <div className='flexCenter bg-primary p-6 rounded-3xl overflow-hidden relative group'>
@@ -12,7 +12,7 @@ const Item = ({book}) => {
       <div className='p-3'>
         <div className='flexBetween'>
             <h4 className='h4 line-clamp-1 !my-0'>{book.name}</h4>
-            <span className='flexCenter h-8 w-8 rounded cursor-pointer hover:bg-primary'><TbShoppingBagPlus className='text-lg'/></span>
+            <span onClick={()=> addToCart(book._id)} className='flexCenter h-8 w-8 rounded cursor-pointer hover:bg-primary'><TbShoppingBagPlus className='text-lg'/></span>
         </div>
         <div className='flexBetween pt-1'>
             <p className='font-bold capitalize'>{book.category}</p>
