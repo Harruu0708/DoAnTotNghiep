@@ -5,10 +5,13 @@ import Navbar from './Navbar'
 import { CgMenuLeft } from 'react-icons/cg'
 import {TbUserCircle} from 'react-icons/tb'
 import {RiUserLine, RiShoppingBag4Line} from 'react-icons/ri'
+import { useContext } from 'react'
+import { ShopContext } from '../context/ShopContext'
+
 
 const Header = () => {
-    const navigate = useNavigate()
-    const [token, setToken] = useState('dummytoken')
+    
+    const {navigate,token, setToken} = useContext(ShopContext)
     const [active, setActive] = useState(false)
     const [menuOpened, setMenuOpened] = useState(false)
     const toggleMenu = () => {
@@ -33,7 +36,7 @@ const Header = () => {
 
   return (
     <header className='fixed top-0 w-full left-0 right-0 z-50'>
-        <div className={`${active ? 'bg-white py-2.5':'py-3'} max-padd-container flexBetween border-b border-slate-900/10 rounded transition-all duration-300`}>
+        <div className={`${active ? 'bg-white py-2.5':'bg-primary py-3'} max-padd-container flexBetween border-b border-slate-900/10 rounded transition-all duration-300`}>
             {/* Logo */}
             <Link to={'/'} className='flex-1 flex items-center justify-start '>
               <img src={logo} alt="" height={36} width={36} className='hidden sm:flex mr-2' />

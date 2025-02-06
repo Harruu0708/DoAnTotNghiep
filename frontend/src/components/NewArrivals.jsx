@@ -6,10 +6,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import "swiper/css";
 import "swiper/css/pagination";
 import {Autoplay, Pagination} from 'swiper/modules';
-import {books} from '../assets/data'  
 import { useState } from 'react';  
 import Item from './Item';
+import { ShopContext } from '../context/ShopContext';
+import { useContext } from 'react';
+
 const NewArrivals = () => {
+    const {books} = useContext(ShopContext)
     const[newArrivals, setNewArrivals] = useState([])
     //Extract the first new books
     useEffect(() => {
