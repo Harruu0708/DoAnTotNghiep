@@ -8,6 +8,7 @@ export const ShopContext = createContext()
 
 const ShopContextProvider = (props) => {
     const currency = '$'
+    const delivery_charges = 5
     const navigate = useNavigate()
     const [token, setToken] = useState("")
     const [cartItems, setCartItems] = useState({})
@@ -43,8 +44,30 @@ const ShopContextProvider = (props) => {
     }
     return totalCount;
   }
+
+  //Get total cart amount
+  const getCartAmount = () =>{
+    let totalAmount = 0;
+    for (const item in cartItems){
+        if(cartItems[item] > 0){
+          let itemInfo =books.find((book)=> book._id === item)
+          if(itemInfo){
+            totalAmount += itemInfo.price * cartItems[item]
+          }
+        }
+      }
+      return totalAmount;
+    }
+
+  // Update the quantity of an item in the cart
+
+  const updateQuantity = async (itemId, quantity) =>{
+    const cartData ={...cartItems}
+    cartData[itemId] = quantity
+    setCartItems(cartData)
+  }
     
-    const contextValue = {books,currency, navigate, token, setToken, cartItems, setCartItems, addToCart, getCartCount}
+    const contextValue = {books,currency, navigate, token, setToken, cartItems, setCartItems, addToCart, getCartCount, getCartAmount, updateQuantity, delivery_charges}
   return (
     <ShopContext.Provider value={contextValue}>
         {props.children}
