@@ -7,7 +7,7 @@ import {books} from "../assets/data"
 export const ShopContext = createContext()
 
 const ShopContextProvider = (props) => {
-    const currency = '$'
+    const currency = 'đ'
     const delivery_charges = 5
     const navigate = useNavigate()
     const [token, setToken] = useState("")

@@ -5,9 +5,9 @@ import {FaRegWindowClose} from 'react-icons/fa'
 import {Link, NavLink} from 'react-router-dom'
 const Navbar = ({containerStyles, toggleMenu, menuOpened}) => {
   const navItems = [
-    {to:'/', label:'Home', icon:<TbHomeFilled/>},
+    {to:'/', label:'Trang chủ', icon:<TbHomeFilled/>},
     {to:'/shop', label:'Shop', icon:<IoLibrary/>},
-    {to:'mailto:info@haru.com', label:'Contact', icon:<IoMailOpen/>},
+    {to:'mailto:info@haru.com', label:'Liên hệ', icon:<IoMailOpen/>},
     
   ]
   return (

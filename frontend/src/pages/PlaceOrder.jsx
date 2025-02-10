@@ -30,14 +30,14 @@ const PlaceOrder = () => {
                     <CartTotal/>
                     {/* <!-- Payment --> */}
                     <div className='my-6'>
-                        <h3 className='bold-20 mb-5'>Payment <span className='text-secondary'>Method</span></h3>
+                        <h3 className='bold-20 mb-5'>Payment <span className='text-secondary'>Phương thứcthức</span></h3>
                         <div className='flex gap-3'>
-                            <div onClick={() => setMethod('stripe')} className={`${method==='stripe' ? "btn-secondary" : "btn-white" } !py-1 text-xs cursor-pointer`}>Stripe</div>
-                            <div onClick={() => setMethod('cod')} className={`${method==='cod' ? "btn-secondary" : "btn-white" } !py-1 text-xs cursor-pointer`}>Cash on Delivery</div>
+                            <div onClick={() => setMethod('stripe')} className={`${method==='stripe' ? "btn-secondary" : "btn-white" } !py-1 text-xs cursor-pointer`}>Momo</div>
+                            <div onClick={() => setMethod('cod')} className={`${method==='cod' ? "btn-secondary" : "btn-white" } !py-1 text-xs cursor-pointer`}>Tiền mặt</div>
                         </div>
                     </div>
                     <div>
-                        <button type='submit' className='btn-secondaryOne'>Place Order</button>
+                        <button type='submit' className='btn-secondaryOne'>Đặt hàng</button>
                     </div>
                 </div>
             </div>

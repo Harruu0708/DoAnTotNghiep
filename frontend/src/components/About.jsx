@@ -10,14 +10,14 @@ const About = () => {
       <div className='flexCenter flex-col gap-16 xl:gap-8 xl:flex-row'>
         {/*left side */}
         <div>
-          <Title title1={"Unveiling Our"} title2={"Store's key features"} titleStyles={'pb-10'} paraStyles={'!block'} />
+          <Title title1={"Các tính năng chính"} title2={"của chúng tôi"} titleStyles={'pb-10'} paraStyles={'!block'} />
           <div className='flex flex-col items-start gap-y-4' >
             <div className='flexCenter gap-x-4'>
               <div className='h-16 min-w-16 bg-secondaryOne flexCenter rounded-md'>
                 <TbTruckReturn className='text-2xl'/>
               </div>
               <div>
-                <h4 className='medium-18'>Secure Payment Options</h4>
+                <h4 className='medium-18'>Tùy chọn thanh toán an toàn</h4>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   ultrices, lacus vitae varius.
@@ -29,7 +29,7 @@ const About = () => {
                 <TbTruckReturn className='text-2xl'/>
               </div>
               <div>
-                <h4 className='medium-18'>Secure Payment Options</h4>
+                <h4 className='medium-18'>Tùy chọn thanh toán an toàn</h4>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   ultrices, lacus vitae varius.
@@ -41,7 +41,7 @@ const About = () => {
                 <TbTruckReturn className='text-2xl'/>
               </div>
               <div>
-                <h4 className='medium-18'>Secure Payment Options</h4>
+                <h4 className='medium-18'>Tùy chọn thanh toán an toàn</h4>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                   ultrices, lacus vitae varius.

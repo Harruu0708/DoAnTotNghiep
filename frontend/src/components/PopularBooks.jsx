@@ -11,7 +11,7 @@ const PopularBooks = () => {
   },[books])
   return (
     <section className='max-padd-container py-16 bg-white '>
-      <Title title1={"Popular"} title2={"Books"} titleStyles={'pb-10'} paraStyles={'!block'} />
+      <Title title1={"Sách"} title2={"Phổ biến"} titleStyles={'pb-10'} paraStyles={'!block'} />
       {/* <!-- container --> */}
       <div className='grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10'>
         {popularBooks.map(book=>(

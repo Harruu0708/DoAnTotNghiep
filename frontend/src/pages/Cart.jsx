@@ -12,7 +12,7 @@ const Cart = () => {
     <section className='max-padd-container'>
       <div className='pt-28'>
         {/* <!-- Title --> */}
-        <Title title1='Cart' title2={'List'} title1Styles={'h3'}  />
+        <Title title1='Danh sách' title2={'Giỏ hàng'} title1Styles={'h3'}  />
         {/* <!-- Cart Items --> */}
         <div className='mt-6'>
           {books.map((item)=>{
@@ -34,7 +34,7 @@ const Cart = () => {
                             <button onClick={() => updateQuantity(item._id, cartItems[item._id] +1) } className='p-1.5 bg-white rounded-full shadow-md'><FaPlus className='text-xs'/></button>
                           </div>
                         </div>
-                        <h4 className='h4'>{currency}{item.price}</h4>
+                        <h4 className='h4'>{item.price} 000{currency}</h4>
                         <TbTrash onClick={() => updateQuantity(item._id, 0) } className='cursor-pointer text-xl text-secondary' />
                       </div>
                     </div>
@@ -52,7 +52,7 @@ const Cart = () => {
           <div className='w-full sm:w-[450px]'>
             <CartTotal/> 
             <button onClick={()=>navigate('/place-order')} className='btn-secondaryOne mt-7'>
-              Proceed to Checkout
+              Thanh toán
             </button> 
           </div>
         </div>

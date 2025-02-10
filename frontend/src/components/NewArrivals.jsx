@@ -23,7 +23,7 @@ const NewArrivals = () => {
     },[books])
   return (
     <section className='max-padd-container py-16 bg-white '>
-        <Title title1={'New'} title2={'Arrivals'} titleStyles={'pb-10'} paraStyles={'!block'} />
+        <Title title1={'Sách'} title2={'mới'} titleStyles={'pb-10'} paraStyles={'!block'} />
         {/* <!-- Swiper --> */}
         <Swiper
            autoplay={{

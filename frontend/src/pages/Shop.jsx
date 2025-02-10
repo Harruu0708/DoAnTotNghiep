@@ -73,13 +73,13 @@ const Shop = () => {
         <div className='w-full max-w-2xl flexCenter'>
           <div className='inline-flex items-center justify-center bg-primary overflow-hidden w-full rounded-full p-4 px-5'>
             <div className='text-lg cursor-pointer'><RiSearch2Line/></div>
-            <input onChange={(e)=>setSearch(e.target.value)} value={search}  type="text" placeholder="Search for books, comics,..." className='border-none outline-none w-full text-sm pl-4 bg-primary' />
+            <input onChange={(e)=>setSearch(e.target.value)} value={search}  type="text" placeholder="Tìm kiếm sách, truyện,..." className='border-none outline-none w-full text-sm pl-4 bg-primary' />
             <div className='flexCenter cursor-pointer text-lg border-l pl-2'><LuSettings2/></div>
           </div>
         </div>
         {/* <!-- categories filter --> */}
         <div className='mt-12 mb-16'>
-          <h4 className='h4 mb-4 hidden sm:flex'>Categories:</h4>
+          <h4 className='h4 mb-4 hidden sm:flex'>Thể loại:</h4>
           <div className='flexCenter sm:flexStart flex-wrap gap-x-12 gap-y-4'>
             {categories.map((cat)=>
               <label key={cat.name}>
@@ -99,13 +99,13 @@ const Shop = () => {
         <div className='mt-8'>
             {/* <!-- title and sort --> */}
             <div className='flexBetween !items-start gap-7 flex-wrap pb-16 max-sm:flexCenter text-center'>
-              <Title title1={"Our"} title2={"Book lists"} titleStyles={'pb-0 textStart'} paraStyles={'!block'} />
+              <Title title1={"Danh sách"} title2={"Sách"} titleStyles={'pb-0 textStart'} paraStyles={'!block'} />
               <div className='flexCenter gap-x-2'>
-                <span className='hidden sm:flex medium-16'>Sort by:</span>
+                <span className='hidden sm:flex medium-16'>Sắp xếp theo:</span>
                 <select onChange={(e)=>setSortType(e.target.value)} className='text-sm p-2.5 outline-none bg-primary text-gray-30 rounded'>
-                  <option value="revelant">Revelant</option>
-                  <option value="low">Low</option>
-                  <option value="high">High</option>
+                  <option value="revelant">Mặc định</option>
+                  <option value="low">Thấp</option>
+                  <option value="high">Cao</option>
                 </select>
               </div>
             </div>
@@ -116,14 +116,14 @@ const Shop = () => {
                   <Item key={book._id} book={book}/>
                 ))
               ):(
-                <p>No Books found for selected filters</p>
+                <p>Không tìm thấy sách cho các bộ lọc đã chọn</p>
               )}
             </div>
         </div>
         {/* <!-- pagination --> */}
         <div className='flexCenter mt-14 mb-10 gap-4'>
           {/* Previous button */}
-          <button disabled={currentPage===1} onClick={()=>setCurrentPage((prev)=> prev-1)} className={`btn-secondary !py-1 !px-3 ${currentPage===1 && "opacity-50 cursor-not-allowed"}`}>Previous</button>
+          <button disabled={currentPage===1} onClick={()=>setCurrentPage((prev)=> prev-1)} className={`btn-secondary !py-1 !px-3 ${currentPage===1 && "opacity-50 cursor-not-allowed"}`}>Trước</button>
           {/* Page numbers */}
           {Array.from({length: totalPages}, (_,index)=>(
             <button key={index + 1} onClick={()=> setCurrentPage(index + 1)} className={`btn-light !py-1 !px-3 ${currentPage === index +1 && "!bg-secondaryOne"}`}>
@@ -131,7 +131,7 @@ const Shop = () => {
             </button>
           ))}
           {/* Next button */}
-          <button disabled={currentPage===totalPages} onClick={()=>setCurrentPage((prev)=> prev+1)} className={`btn-secondary !py-1 !px-3 ${currentPage===totalPages && "opacity-50 cursor-not-allowed"}`}>Next</button>
+          <button disabled={currentPage===totalPages} onClick={()=>setCurrentPage((prev)=> prev+1)} className={`btn-secondary !py-1 !px-3 ${currentPage===totalPages && "opacity-50 cursor-not-allowed"}`}>Sau</button>
         </div>
       </div>
       <Footer/>

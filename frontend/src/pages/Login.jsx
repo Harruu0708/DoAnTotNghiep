@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import loginImg from '../assets/login.png'
 const Login = () => {
-    const [currState, setCurrState] = useState('Login')
+    const [currState, setCurrState] = useState('Đăng nhập')
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -19,9 +19,9 @@ const Login = () => {
                     <div className='w-full mb-4'>
                         <h3 className='bold-36'>{currState}</h3>
                     </div>
-                    {currState === 'Sign Up' && (
+                    {currState === 'Đăng ký' && (
                         <div className='w-full'>
-                            <label htmlFor="name" className='medium-14'>Name</label>
+                            <label htmlFor="name" className='medium-14'>Tên</label>
                             <input type="text" placeholder='Name' className='w-full px-3 py-1 ring-1 ring-slate-900/10 rounded bg-primary mt-1' />
                         </div>
                     )}
@@ -31,16 +31,16 @@ const Login = () => {
                     </div>
 
                     <div className='w-full'>
-                            <label htmlFor="password" className='medium-14'>Password</label>
+                            <label htmlFor="password" className='medium-14'>Mật khẩu</label>
                             <input type="password" placeholder='Password' className='w-full px-3 py-1 ring-1 ring-slate-900/10 rounded bg-primary mt-1' />
                     </div>
-                    <button type='submit' className='btn-dark w-full mt-5 !py-[7px] !rounded '>{currState==="Sign Up" ? 'Sign Up':'Login'}</button>
+                    <button type='submit' className='btn-dark w-full mt-5 !py-[7px] !rounded '>{currState==="Đăng ký" ? 'Đăng ký':'Đăng nhập'}</button>
                     <div className='w-full flex flex-col gap-y-3 medium-14'>
-                        <div className='underline'>Forgot your password?</div>
-                        {currState === 'Login' ? (
-                            <div className='underline'>Don't have an account? <span onClick={()=>setCurrState('Sign Up')} className='cursor-pointer hover:text-secondaryOne'>Create an account</span></div>
+                        <div className='underline'>Quên mật khẩu?</div>
+                        {currState === 'Đăng nhập' ? (
+                            <div className='underline'>Chưa có tài khoản? <span onClick={()=>setCurrState('Đăng ký')} className='cursor-pointer hover:text-secondaryOne'>Tạo tài khoản</span></div>
                         ):(
-                            <div className='underline'>Already have an account? <span onClick={()=>setCurrState('Login')} className='cursor-pointer hover:text-secondaryOne'>Login</span></div>
+                            <div className='underline'>Đã có tài khoản? <span onClick={()=>setCurrState('Đăng nhập')} className='cursor-pointer hover:text-secondaryOne'>Đăng nhập</span></div>
                         )}
                     </div>
                 </form>
