@@ -7,10 +7,12 @@ import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import PlaceOrder from "./pages/PlaceOrder";
 import {Route, Routes} from "react-router-dom";
+import AuthChecker from "./components/AuthChecker";
 const App = () => {
   return (
     <main className='overflow-hidden bg-primary'>
       <Header />
+      {/* <AuthChecker /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />

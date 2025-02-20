@@ -12,8 +12,8 @@ const authController = {
 
             // Create a new user
             const newUser = await new User({
-                username: req.body.username,
                 email: req.body.email,
+                username: req.body.username,
                 password: hashed
             })
 

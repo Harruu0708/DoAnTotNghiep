@@ -7,19 +7,27 @@ import {TbUserCircle} from 'react-icons/tb'
 import {RiUserLine, RiShoppingBag4Line} from 'react-icons/ri'
 import { useContext } from 'react'
 import { ShopContext } from '../context/ShopContext'
-
+import { logoutUser } from '../../redux/apiRequest'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 
 const Header = () => {
     
-    const {navigate,token, setToken, getCartCount} = useContext(ShopContext)
-    
-
+    const {navigate, getCartCount} = useContext(ShopContext)
+    const dispatch = useDispatch()
+    const user = useSelector((state) => state.auth.login.currentUser);
+    console.log(user)
+    const token = user?.accessToken;
     const [active, setActive] = useState(false)
     const [menuOpened, setMenuOpened] = useState(false)
     const toggleMenu = () => {
         setMenuOpened((prev) => !prev)
     }
+
+    const handleLogout = () => {
+        logoutUser(dispatch, navigate, token);
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -63,7 +71,7 @@ const Header = () => {
                 <div className='relative group'>
                     <div onClick={() => !token && navigate('/login')}  className=''>
                         {token ? (
-                            <div><TbUserCircle className='text-[29px] cursor-pointer'/></div>
+                            <div><TbUserCircle className='text-[29px] cursor-pointer'/>Xin chào, <span>{user.others.username}</span> </div>
                         ):(
                         <button className='btn-outline flexCenter gap-x-2'>Đăng nhập <RiUserLine/></button>
                         )}
@@ -72,7 +80,7 @@ const Header = () => {
                     {token && <>
                     <ul className='bg-white p-1 w-32 ring-1 ring-slate-900/5 rounded absolute right-0 top-7 hidden group-hover:flex flex-col regular-14 shadow-md'>
                         <li className='p-2 text-tertiary rounded-md hover:bg-primary cursor-pointer'>Đơn hàng</li>
-                        <li className='p-2 text-tertiary rounded-md hover:bg-primary cursor-pointer'>Đăng xuất</li>
+                        <li onClick={handleLogout} className='p-2 text-tertiary rounded-md hover:bg-primary cursor-pointer'>Đăng xuất</li>
                     </ul>
                     </>}
                 </div>

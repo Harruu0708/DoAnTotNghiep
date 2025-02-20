@@ -2,6 +2,7 @@ import React, { createContext, useEffect } from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {books} from "../assets/data"
+import { useSelector, useDispatch } from 'react-redux'
 
 
 export const ShopContext = createContext()
@@ -10,11 +11,18 @@ const ShopContextProvider = (props) => {
     const currency = 'đ'
     const delivery_charges = 5
     const navigate = useNavigate()
-    const [token, setToken] = useState("")
     const [cartItems, setCartItems] = useState({})
-
-    //Add items to cart
-    const addToCart = async (itemId) =>{
+    const [token, setToken] = useState('')
+    const tokenFromRedux = useSelector((state) => state.auth.login.currentUser?.accessToken);
+      // Lấy token từ ReduxS
+      useEffect(() => {
+        if (tokenFromRedux) {
+            setToken(tokenFromRedux);
+        }
+    }, [tokenFromRedux]); 
+      
+      //Add items to cart
+      const addToCart = async (itemId) =>{
       const cartData= {...cartItems}
 
       if(cartData[itemId]){
@@ -67,7 +75,7 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData)
   }
     
-    const contextValue = {books,currency, navigate, token, setToken, cartItems, setCartItems, addToCart, getCartCount, getCartAmount, updateQuantity, delivery_charges}
+    const contextValue = {books,currency, navigate, token, setToken,cartItems, setCartItems, addToCart, getCartCount, getCartAmount, updateQuantity, delivery_charges}
   return (
     <ShopContext.Provider value={contextValue}>
         {props.children}
