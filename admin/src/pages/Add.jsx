@@ -20,17 +20,17 @@ const Add = () => {
       <form className='flex flex-col gap-y-3 medium-14 lg:w-[777px]'>
         <div className='w-full'>
             <h5>Product Name</h5>
-            <input type="text" placeholder='Write here...' className='px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white mt-1 w-full max-w-lg' />
+            <input onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder='Write here...' className='px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white mt-1 w-full max-w-lg' />
         </div>
         <div className='w-full'>
             <h5 className='h5'>Product description</h5>
-            <textarea type="text" placeholder='Write here...' className='px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white mt-1 w-full max-w-lg' />
+            <textarea onChange={(e) => setDescription(e.target.value)} value={description} type="text" placeholder='Write here...' className='px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white mt-1 w-full max-w-lg' />
         </div>
         {/* category */}
         <div className='flex items-end gap-x-6'>
             <div>
                 <h5 className='h5'>Category</h5>
-                <select className='px-3 py-2 ring-1 ring-slate-900/10 rounded bg-white mt-1 sm:w-full text-gray-30'>
+                <select onChange={(e) => setCategory(e.target.value)} value={category} className='px-3 py-2 ring-1 ring-slate-900/10 rounded bg-white mt-1 sm:w-full text-gray-30'>
                     <option value="Fiction">Fiction</option>
                     <option value="Children">Children</option>
                     <option value="Health">Health</option>
@@ -48,7 +48,7 @@ const Add = () => {
         </div>
         <div>
             <h5 className='h5'>Price</h5>
-            <input type="number" placeholder='Price' min={0} className='px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white w-20' />
+            <input onChange={(e) => setPrice(e.target.value)} value={price} type="number" placeholder='Price' min={0} className='px-3 py-1.5 ring-1 ring-slate-900/10 rounded bg-white w-20' />
         </div>
 
         <div className='flexStart gap-2 my-2'>
