@@ -79,7 +79,7 @@ const Header = () => {
 
                     {token && <>
                     <ul className='bg-white p-1 w-32 ring-1 ring-slate-900/5 rounded absolute right-0 top-7 hidden group-hover:flex flex-col regular-14 shadow-md'>
-                        <li className='p-2 text-tertiary rounded-md hover:bg-primary cursor-pointer'>Đơn hàng</li>
+                        <li onClick={() => navigate("/order")} className='p-2 text-tertiary rounded-md hover:bg-primary cursor-pointer'>Đơn hàng</li>
                         <li onClick={handleLogout} className='p-2 text-tertiary rounded-md hover:bg-primary cursor-pointer'>Đăng xuất</li>
                     </ul>
                     </>}

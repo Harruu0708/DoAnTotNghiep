@@ -22,7 +22,7 @@ const ShopContextProvider = (props) => {
     }, [tokenFromRedux]); 
       
       //Add items to cart
-      const addToCart = async (itemId) =>{
+    const addToCart = async (itemId) =>{
       const cartData= {...cartItems}
 
       if(cartData[itemId]){

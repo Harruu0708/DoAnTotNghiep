@@ -7,6 +7,7 @@ import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import PlaceOrder from "./pages/PlaceOrder";
 import {Route, Routes} from "react-router-dom";
+import Order from "./pages/Order";
 import AuthChecker from "./components/AuthChecker";
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/place-order" element={<PlaceOrder />} />
+        <Route path="/order" element={<Order />} />
       </Routes>
     </main>
   );

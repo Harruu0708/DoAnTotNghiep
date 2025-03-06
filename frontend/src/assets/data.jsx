@@ -461,41 +461,116 @@ export const books = [
 
 ];
 
+export const orders = [
+    {
+      _id: "ORDER-1",
+      userId: "USER-1",
+      date: 1716634345448, // hoặc Date.now()
+      status: "Đang xử lý",
+      address: "Số 12, đường ABC, Quận 1, TP.HCM",
+      paymentMethod: "COD", // hoặc "Online"
+      items: [
+        {
+          ...books.find((b) => b._id === "1"), // Book ID = 1
+          quantity: 2,
+        },
+        {
+          ...books.find((b) => b._id === "5"), // Book ID = 5
+          quantity: 1,
+        },
+      ],
+      total: 15 * 2 + 15, // = 45
+    },
+    {
+      _id: "ORDER-2",
+      userId: "USER-2",
+      date: 1716634345448,
+      status: "Đang vận chuyển",
+      address: "123/45 Trần Hưng Đạo, Quận 5, TP.HCM",
+      paymentMethod: "Online",
+      items: [
+        {
+          ...books.find((b) => b._id === "10"), // Book ID = 10
+          quantity: 1,
+        },
+      ],
+      total: 18,
+    },
+    {
+      _id: "ORDER-3",
+      userId: "USER-1",
+      date: 1716634345448,
+      status: "Hủy",
+      address: "Số 99, đường XYZ, Quận 2, TP.HCM",
+      paymentMethod: "COD",
+      items: [
+        {
+          ...books.find((b) => b._id === "2"), // Book ID = 2
+          quantity: 1,
+        },
+        {
+          ...books.find((b) => b._id === "3"), // Book ID = 3
+          quantity: 2,
+        },
+      ],
+      total: 20 + 10 * 2, // = 40
+    },
+    {
+      _id: "ORDER-4",
+      userId: "USER-3",
+      date: 1716634345448,
+      status: "Đã giao",
+      address: "Phường Linh Trung, TP Thủ Đức, TP.HCM",
+      paymentMethod: "Online",
+      items: [
+        {
+          ...books.find((b) => b._id === "25"), // Book ID = 25
+          quantity: 1,
+        },
+        {
+          ...books.find((b) => b._id === "36"), // Book ID = 36
+          quantity: 1,
+        },
+      ],
+      total: 22 + 25, // = 47
+    },
+  ];
+
 
 
 // FOOTER SECTION
 export const FOOTER_LINKS = [
     {
-      title: "Learn More",
+      title: "Nhiều hơn",
       links: [
-        "About Us",
-        "Latest books",
-        "Hot Offers",
-        "Popular books",
+        "Về chúng tôi",
+        "Sách mới",
+        "Sách giảm giá",
+        "Sách phổ biến",
         "FAQ",
-        "Privacy Policy",
+        "Chính sách riêng tư",
       ],
     },
     {
-      title: "Our Community",
+      title: "Về chúng tôi",
       links: [
-        "Terms and Conditions",
-        "Special Offers",
-        "Customer Reviews",
+        "Điều khoản và điều kiện",
+        "Chính sách hoàn trả",
+        "Đánh giá khách hàng",
       ],
     },
   ];
   
   export const FOOTER_CONTACT_INFO = {
-    title: "Contact Us",
+    title: "Liên hệ",
     links: [
-      { label: "Contact Number", value: "123-456-7890" },
-      { label: "Email Address", value: "info@haru.com" },
+      { label: "Số điện thoại", value: "123-456-7890" },
+      { label: "Email", value: "info@haru.com" },
     ],
   };
   
   export const SOCIALS = {
-    title: "Social",
+    title: "Theo dõi chúng tôi",
     links: [
       { icon: <FaFacebook />, id: "facebook" },
       { icon: <FaInstagram />, id: "instagram" },
