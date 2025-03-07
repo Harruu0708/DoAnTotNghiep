@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import PlaceOrder from "./pages/PlaceOrder";
 import {Route, Routes} from "react-router-dom";
 import Order from "./pages/Order";
+import Profile from "./pages/Profile";
 import AuthChecker from "./components/AuthChecker";
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/order" element={<Order />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </main>
   );
