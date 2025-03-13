@@ -1,18 +1,26 @@
 import React ,{useContext} from 'react'
 import {TbShoppingBagPlus} from 'react-icons/tb'
 import { ShopContext } from '../context/ShopContext'
+
 const Item = ({book}) => {
 
-  const {currency, addToCart} = useContext(ShopContext)
+  const {currency, addToCart, navigate} = useContext(ShopContext)
+
+  const handleNavigate = () => {
+    navigate(`/shop/${book._id}`);
+  };
   return (
-    <div>
+    <div onClick={handleNavigate} className="cursor-pointer transition-transform duration-300 hover:scale-105">
       <div className='flexCenter bg-primary p-6 rounded-3xl overflow-hidden relative group'>
         <img src={book.image} alt="bookImg" className='shadow-xl shadow-slate-900/30 rounded-lg'/>
       </div>
       <div className='p-3'>
         <div className='flexBetween'>
             <h4 className='h4 line-clamp-1 !my-0'>{book.name}</h4>
-            <span onClick={()=> addToCart(book._id)} className='flexCenter h-8 w-8 rounded cursor-pointer hover:bg-primary'><TbShoppingBagPlus className='text-lg'/></span>
+            <span onClick={(e) => {
+              e.stopPropagation(); // Ngăn chặn sự kiện click lan sang div cha
+              addToCart(book._id);
+            }}  className='flexCenter h-8 w-8 rounded cursor-pointer hover:bg-primary'><TbShoppingBagPlus className='text-lg'/></span>
         </div>
         <div className='flexBetween pt-1'>
             <p className='font-bold capitalize'>{book.category}</p>

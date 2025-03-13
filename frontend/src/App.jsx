@@ -9,7 +9,9 @@ import PlaceOrder from "./pages/PlaceOrder";
 import {Route, Routes} from "react-router-dom";
 import Order from "./pages/Order";
 import Profile from "./pages/Profile";
+import ShopDetail from "./pages/ShopDetail";
 import AuthChecker from "./components/AuthChecker";
+
 const App = () => {
   return (
     <main className='overflow-hidden bg-primary'>
@@ -24,6 +26,7 @@ const App = () => {
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/order" element={<Order />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/shop/:id" element={<ShopDetail />} />
       </Routes>
     </main>
   );
