@@ -17,7 +17,6 @@ const Header = () => {
     const {navigate, getCartCount} = useContext(ShopContext)
     const dispatch = useDispatch()
     const user = useSelector((state) => state.auth.login.currentUser);
-    console.log(user)
     const token = user?.accessToken;
     const [active, setActive] = useState(false)
     const [menuOpened, setMenuOpened] = useState(false)
