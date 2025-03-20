@@ -11,6 +11,7 @@ import Item from '../components/Item'
 import Footer from '../components/Footer'
 
 const Shop = () => {
+  // const [books, setBooks] = useState([])
   const {books} = useContext(ShopContext)
   const [category, setCategory] = useState([])
   const [sortType, setSortType] = useState('revelant')
@@ -48,6 +49,20 @@ const Shop = () => {
         return booksList
     }
   }
+  // 🔹 Gọi API để lấy danh sách sách
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/product/all')
+        const data = await response.json()
+        setBooks(data) // Cập nhật state với dữ liệu từ API
+      } catch (error) {
+        console.error('Lỗi khi tải danh sách sách:', error)
+      }
+    }
+
+    fetchBooks()
+  }, [])
 
   useEffect(()=>{
     let filtered = applyFilters()
