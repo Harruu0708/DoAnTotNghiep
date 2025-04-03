@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import authRouter from './routes/authRoute.js';
 import userRouter from './routes/userRoute.js'; 
 import productRouter from './routes/productRoute.js';
+import promotionRouter from './routes/promotionRoute.js';
 
 dotenv.config();
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api/product', productRouter);
+app.use('/api/promotion', promotionRouter);
 
 app.listen(8000, () =>{
     console.log('Server is running on port 8000');

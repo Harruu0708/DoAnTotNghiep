@@ -2,13 +2,21 @@ import React, { useContext, useState, useEffect } from 'react'
 import Title from './Title'
 import {ShopContext} from '../context/ShopContext'
 import Item from './Item'
+import axios from 'axios';
 const PopularBooks = () => {
-  const {books} = useContext(ShopContext)
   const [popularBooks, setPopularBooks] = useState([])
-  useEffect(()=>{
-    const data = books.filter(item=>item.popular)
-    setPopularBooks(data.slice(0,5))
-  },[books])
+  useEffect(() => {
+    const fetchPopularBooks = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/product/popular"); 
+        setPopularBooks(res.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu sách phổ biến:", error);
+      }
+    };
+
+    fetchPopularBooks();
+  }, []);
   return (
     <section className='max-padd-container py-16 bg-white '>
       <Title title1={"Sách"} title2={"Phổ biến"} titleStyles={'pb-10'} paraStyles={'!block'} />

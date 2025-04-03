@@ -1,5 +1,6 @@
 import Product from '../models/Product.js';
 import cloudinary from '../config/cloudinary.js';
+import Promotion from '../models/Promotion.js';
 
 const productController = {
     getAllProduct: async (req, res) => {
@@ -20,7 +21,7 @@ const productController = {
     },
     createProduct: async (req, res) => {
         try {
-            const { name, category, publisher, discount_price, price, description, quantity,popular } = req.body;
+            const { name, category, publisher,author, price, description, quantity,popular } = req.body;
 
             // Kiểm tra nếu có file ảnh được upload
             let imageUrl = "";
@@ -39,12 +40,14 @@ const productController = {
                 name,
                 category,
                 publisher,
+                author,
                 image: imageUrl, // Lưu URL ảnh vào database
-                discount_price,
+                // discount_price: discount_price || null,
                 price,
                 description,
                 quantity,
                 popular: popular || false,
+                // promotion_id: promotion_id || null,
             });
 
             await product.save();
@@ -54,6 +57,49 @@ const productController = {
         }
     },
 
+    // Phương thức tính giá sau khi áp dụng mã giảm giá
+    // applyPromotionToProducts: async (req, res) => {
+    //     try {
+    //         const { promotionId } = req.params;
+    //         const promotion = await Promotion.findById(promotionId);
+    
+    //         if (!promotion) {
+    //             return res.status(404).json({ msg: "Promotion not found" });
+    //         }
+    
+    //         // Lấy danh sách sản phẩm cần cập nhật
+    //         const products = await Product.find({ promotion_id: promotionId });
+    
+    //         // Cập nhật từng sản phẩm với giá mới
+    //         const updatedProducts = await Promise.all(products.map(async (product) => {
+    //             const newDiscountPrice = product.price * (1 - promotion.discount / 100);
+    //             return Product.findByIdAndUpdate(product._id, { discount_price: newDiscountPrice }, { new: true });
+    //         }));
+    
+    //         res.json({ msg: "Applied promotion to products", updatedProducts });
+    //     } catch (error) {
+    //         return res.status(500).json({ msg: error.message });
+    //     }
+    // },
+    getLatestProducts: async (req, res) => {
+        try {
+            const latestProducts = await Product.find()
+                .sort({ createdAt: -1 }) // Sắp xếp giảm dần theo ngày tạo (sản phẩm mới nhất trước)
+                .limit(6); // Giới hạn lấy 6 sản phẩm
+    
+            res.json(latestProducts);
+        } catch (error) {
+            return res.status(500).json({ msg: error.message });
+        }
+    },
+    getPopularProducts: async (req, res) => {
+        try {
+            const products = await Product.find({ popular: true }).limit(5);
+            res.json(products);
+        } catch (error) {
+            return res.status(500).json({ msg: error.message });
+        }
+    },
 };
 
 export default productController;

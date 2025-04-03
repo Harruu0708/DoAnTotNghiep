@@ -12,7 +12,7 @@ const Item = ({book}) => {
   return (
     <div onClick={handleNavigate} className="cursor-pointer transition-transform duration-300 hover:scale-105">
       <div className='flexCenter bg-primary p-6 rounded-3xl overflow-hidden relative group'>
-        <img src={book.image} alt="bookImg" className='shadow-xl shadow-slate-900/30 rounded-lg'/>
+        <img src={book.image} alt="bookImg" className='w-40 h-60 object-cover shadow-xl shadow-slate-900/30 rounded-lg'/>
       </div>
       <div className='p-3'>
         <div className='flexBetween'>

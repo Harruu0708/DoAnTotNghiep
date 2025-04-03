@@ -10,17 +10,24 @@ import { useState } from 'react';
 import Item from './Item';
 import { ShopContext } from '../context/ShopContext';
 import { useContext } from 'react';
+import axios from 'axios'
 
 const NewArrivals = () => {
-    const {books} = useContext(ShopContext)
+    
     const[newArrivals, setNewArrivals] = useState([])
     //Extract the first new books
     useEffect(() => {
-        const data= books.slice(0,7);
-        console.log(data)
-        setNewArrivals(data.reverse())
+        const fetchNewArrivals = async () => {
+            try {
+                const res = await axios.get("http://localhost:8000/api/product/latest")
+                setNewArrivals(res.data) // Gán data từ API vào state
+            } catch (error) {
+                console.error("Error fetching new arrivals:", error)
+            }
+        }
 
-    },[books])
+        fetchNewArrivals()
+    }, []) // Chỉ chạy 1 lần khi component mount
   return (
     <section className='max-padd-container py-16 bg-white '>
         <Title title1={'Sách'} title2={'mới'} titleStyles={'pb-10'} paraStyles={'!block'} />

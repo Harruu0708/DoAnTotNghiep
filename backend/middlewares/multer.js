@@ -9,7 +9,7 @@ const storage = new CloudinaryStorage({
     public_id: (req, file) => `${Date.now()}-${file.originalname}`, // Tạo tên file duy nhất
   },
 });
+const uploadText = multer().none();
+const uploadImage = multer({ storage });
 
-const upload = multer({ storage });
-
-export default upload;
+export { uploadText, uploadImage };

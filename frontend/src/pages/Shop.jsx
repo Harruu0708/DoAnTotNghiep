@@ -11,8 +11,8 @@ import Item from '../components/Item'
 import Footer from '../components/Footer'
 
 const Shop = () => {
-  // const [books, setBooks] = useState([])
-  const {books} = useContext(ShopContext)
+  const [books, setBooks] = useState([])
+  // const {books} = useContext(ShopContext)
   const [category, setCategory] = useState([])
   const [sortType, setSortType] = useState('revelant')
   const [filteredBooks, setFilteredBooks] = useState([])

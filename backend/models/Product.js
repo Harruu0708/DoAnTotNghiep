@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   category: { type: String, required: true },
+  author: { type: String },
   publisher: { type: String },
   image: { type: String }, // Lưu URL ảnh trên Cloudinary
   discount_price: { type: Number },
@@ -10,7 +11,7 @@ const productSchema = new mongoose.Schema({
   description: { type: String },
   quantity: { type: Number, required: true },
   popular: { type: Boolean, default: false }, 
-  // promotion_id: { type: mongoose.Schema.Types.ObjectId, ref: "Promotion" },
+  promotion_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Promotion' }, // Tham chiếu đến Promotion
 }
 ,{ timestamps: true });
 
