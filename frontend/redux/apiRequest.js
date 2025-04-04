@@ -53,6 +53,7 @@ export const logoutUser = async (dispatch, navigate, token) => {
         });
         dispatch(removeToken());
         navigate('/');
+        window.location.reload();
     } catch (error) {
         console.log(error);
     }

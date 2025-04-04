@@ -19,7 +19,7 @@ const Item = ({book}) => {
             <h4 className='h4 line-clamp-1 !my-0'>{book.name}</h4>
             <span onClick={(e) => {
               e.stopPropagation(); // Ngăn chặn sự kiện click lan sang div cha
-              addToCart(book._id);
+              addToCart(book);
             }}  className='flexCenter h-8 w-8 rounded cursor-pointer hover:bg-primary'><TbShoppingBagPlus className='text-lg'/></span>
         </div>
         <div className='flexBetween pt-1'>

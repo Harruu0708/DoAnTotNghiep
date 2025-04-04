@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {books} from "../assets/data"
 import { useSelector, useDispatch } from 'react-redux'
+import axios from 'axios';
 
 
 export const ShopContext = createContext()
@@ -11,7 +12,7 @@ const ShopContextProvider = (props) => {
     const currency = 'đ'
     const delivery_charges = 5
     const navigate = useNavigate()
-    const [cartItems, setCartItems] = useState({})
+    const [cartItems, setCartItems] = useState([]);
     const [token, setToken] = useState('')
     const tokenFromRedux = useSelector((state) => state.auth.login.currentUser?.accessToken);
       // Lấy token từ ReduxS
@@ -20,62 +21,109 @@ const ShopContextProvider = (props) => {
             setToken(tokenFromRedux);
         }
     }, [tokenFromRedux]); 
+
+  
+
+     // Lấy giỏ hàng từ API
+     useEffect(() => {
+      if (token) {
+          const fetchCart = async () => {
+              try {
+                  const response = await axios.get('http://localhost:8000/api/cart', {
+                      headers: {
+                          Authorization: `Bearer ${token}`, // Gửi token trong header
+                      },
+                  });
+                  setCartItems(response.data); // Cập nhật giỏ hàng
+              } catch (error) {
+                  console.error('Failed to fetch cart:', error);
+              }
+          };
+          fetchCart(); // Gọi API để lấy giỏ hàng
+      }
+  }, [token]); // Chạy lại mỗi khi token thay đổi
       
       //Add items to cart
-    const addToCart = async (itemId) =>{
-      const cartData= {...cartItems}
-
-      if(cartData[itemId]){
-        cartData[itemId]+=1;
-      }else{
-        cartData[itemId] = 1;
-      }
-      setCartItems(cartData)
-
-    }
-    // useEffect(()=>{
-    //   console.log(cartItems)
-    // },[cartItems])
+      const addToCart = async (book) => {
+        try {
+            // Gửi yêu cầu tới API để thêm sản phẩm vào giỏ hàng
+            const response = await axios.post('http://localhost:8000/api/cart/add', 
+            {
+                productId: book._id,
+                quantity: 1
+            }, 
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Gửi token để xác thực người dùng
+                }
+            });
+            // Cập nhật giỏ hàng trong state
+            const updatedCart = await axios.get('http://localhost:8000/api/cart', {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            setCartItems(updatedCart.data); // Cập nhật giỏ hàng từ phản hồi API
+        } catch (error) {
+            console.error('Error adding item to cart:', error);
+        }
+      };      
 
     //Get total items in cart
-    const getCartCount = () =>{
-      let totalCount = 0;
-      for (const item in cartItems){
-        try{
-          if(cartItems[item] > 0){
-            totalCount += cartItems[item]
-          }
-        } catch (error){
-          console.log(error)
-      }
-      
-    }
-    return totalCount;
-  }
+    const getCartCount = () => {
+      if (!cartItems || !Array.isArray(cartItems)) return 0; // Kiểm tra cartItems
+    
+      return cartItems.reduce((total, item) => {
+          if (!item.products || !Array.isArray(item.products)) return total; // Kiểm tra item.products
+          return total + item.products.reduce((productTotal, product) => productTotal + product.quantity, 0);
+      }, 0);
+    };
+    
+    
 
-  //Get total cart amount
-  const getCartAmount = () =>{
-    let totalAmount = 0;
-    for (const item in cartItems){
-        if(cartItems[item] > 0){
-          let itemInfo =books.find((book)=> book._id === item)
-          if(itemInfo){
-            totalAmount += itemInfo.price * cartItems[item]
-          }
-        }
-      }
-      return totalAmount;
-    }
+    //Get total cart amount
+    const getCartAmount = () => {
+      return cartItems.reduce((total, item) => {
+          return total + item.products.reduce((productTotal, product) => 
+              productTotal + product.productId.price * product.quantity, 0);
+      }, 0);
+    };
+  
 
   // Update the quantity of an item in the cart
 
-  const updateQuantity = async (itemId, quantity) =>{
-    const cartData ={...cartItems}
-    cartData[itemId] = quantity
-    setCartItems(cartData)
-  }
+  const updateQuantity = (itemId, quantity) => {
+    setCartItems(prevItems => {
+      if (quantity <= 0) {
+        return prevItems.filter(item => item._id !== itemId);
+      } else {
+        return prevItems.map(item =>
+          item._id === itemId ? { ...item, quantity } : item
+        );
+      }
+    });
+  };
+
+  const removeFromCart = async (productId) => {
+    try {
+      // Gửi yêu cầu DELETE tới API để xóa sản phẩm khỏi giỏ hàng
+      const response = await axios.delete('http://localhost:8000/api/cart/remove', {
+        headers: {
+          Authorization: `Bearer ${token}`, // Gửi token trong header để xác thực người dùng
+        },
+        data: { productId } // Dữ liệu cần gửi đi (productId của sản phẩm cần xóa)
+      });
+  
+      // Cập nhật giỏ hàng sau khi xóa sản phẩm
+       // Cập nhật giỏ hàng trong state
+      const updatedCart = await axios.get('http://localhost:8000/api/cart', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCartItems(updatedCart.data); // Cập nhật giỏ hàng từ phản hồi API // Cập nhật giỏ hàng từ phản hồi API
+    } catch (error) {
+      console.error('Error removing item from cart:', error);
+    }
+  };
     
-    const contextValue = {books,currency, navigate, token, setToken,cartItems, setCartItems, addToCart, getCartCount, getCartAmount, updateQuantity, delivery_charges}
+    const contextValue = {books,currency, navigate, token, setToken,cartItems, setCartItems, addToCart, getCartCount, getCartAmount, updateQuantity, removeFromCart, delivery_charges}
   return (
     <ShopContext.Provider value={contextValue}>
         {props.children}
