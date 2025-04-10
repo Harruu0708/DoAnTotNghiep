@@ -1,10 +1,14 @@
 import React ,{useContext} from 'react'
 import {TbShoppingBagPlus} from 'react-icons/tb'
 import { ShopContext } from '../context/ShopContext'
+import { useSelector } from 'react-redux'
+
 
 const Item = ({book}) => {
 
   const {currency, addToCart, navigate} = useContext(ShopContext)
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const token = user?.accessToken;
 
   const handleNavigate = () => {
     navigate(`/shop/${book._id}`);
@@ -19,7 +23,11 @@ const Item = ({book}) => {
             <h4 className='h4 line-clamp-1 !my-0'>{book.name}</h4>
             <span onClick={(e) => {
               e.stopPropagation(); // Ngăn chặn sự kiện click lan sang div cha
-              addToCart(book);
+              if (!token) {
+                navigate('/login');
+              } else {
+                addToCart(book);
+              }
             }}  className='flexCenter h-8 w-8 rounded cursor-pointer hover:bg-primary'><TbShoppingBagPlus className='text-lg'/></span>
         </div>
         <div className='flexBetween pt-1'>

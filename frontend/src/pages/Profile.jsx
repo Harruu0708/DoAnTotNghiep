@@ -1,22 +1,47 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 import Footer from "../components/Footer";
 const Profile = () => {
   // Dữ liệu người dùng (có thể lấy từ API, Redux, Context, v.v.)
-  const [user, setUser] = useState({
-    avatar: "https://via.placeholder.com/150?text=Avatar",
-    username: "Nguyễn Văn A",
-    email: "nva@example.com",
-    phone: "0123456789",
-    address: "123 Đường ABC, Quận 1, TP.HCM",
-  });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // State mở/đóng modal
   const [showEditModal, setShowEditModal] = useState(false);
   const [showChangePassModal, setShowChangePassModal] = useState(false);
 
+  const currentUser = useSelector((state) => state.auth.login.currentUser);
+  const token = currentUser?.accessToken;
+  useEffect(() => {
+    if (!token) return; // Chặn nếu chưa có token
+  
+    const fetchUserInfo = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/user/info", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUser(res.data.user);
+        setEditFormData(res.data.user);
+        setLoading(false);
+      } catch (err) {
+        console.error("Lỗi khi lấy thông tin người dùng:", err);
+        setLoading(false);
+      }
+    };
+  
+    fetchUserInfo();
+  }, [token]);
+
+  
+
   // Input tạm để cập nhật user (có thể tách ra thành state riêng)
-  const [editFormData, setEditFormData] = useState({ ...user });
+  const [editFormData, setEditFormData] = useState({});
   const [passwordForm, setPasswordForm] = useState({
     currentPass: "",
     newPass: "",
@@ -74,40 +99,41 @@ const Profile = () => {
       <h2 className="h2 pt-28">Hồ sơ của bạn</h2>
 
       {/* Thẻ hiển thị thông tin người dùng */}
-      <div className="bg-white shadow-md rounded-lg p-6 mt-6 flex gap-6 flex-wrap md:flex-nowrap">
-        {/* Avatar người dùng */}
-        <div className="flexCenter w-full md:w-auto">
-          <img
-            src={user.avatar}
-            alt="User Avatar"
-            className="w-32 h-32 object-cover rounded-full"
-          />
-        </div>
-
-        {/* Thông tin cơ bản */}
-        <div className="flex-1">
-          <h3 className="bold-20 mb-2">{user.username}</h3>
-          <p className="regular-16 text-gray-600">
-            <span className="bold-16">Email:</span> {user.email}
-          </p>
-          <p className="regular-16 text-gray-600">
-            <span className="bold-16">Số điện thoại:</span> {user.phone}
-          </p>
-          <p className="regular-16 text-gray-600">
-            <span className="bold-16">Địa chỉ:</span> {user.address}
-          </p>
-
-          {/* Nút chỉnh sửa thông tin, đổi mật khẩu */}
-          <div className="mt-4 flex gap-3">
-            <button className="btn-secondary" onClick={handleEditProfile}>
-              Chỉnh sửa
-            </button>
-            <button className="btn-outline" onClick={handleChangePassword}>
-              Đổi mật khẩu
-            </button>
+      {loading ? (
+        <p>Đang tải dữ liệu...</p>
+      ) : user ? (
+        <div className="bg-white shadow-md rounded-lg p-6 mt-6 flex gap-6 flex-wrap md:flex-nowrap">
+          <div className="flexCenter w-full md:w-auto">
+            <img
+              src={user.avatar}
+              alt="User Avatar"
+              className="w-32 h-32 object-cover rounded-full"
+            />
+          </div>
+          <div className="flex-1">
+            <h3 className="bold-20 mb-2">{user.fullname}</h3>
+            <p className="regular-16 text-gray-600">
+              <span className="bold-16">Email:</span> {user.email}
+            </p>
+            <p className="regular-16 text-gray-600">
+              <span className="bold-16">Số điện thoại:</span> {user.phone}
+            </p>
+            <p className="regular-16 text-gray-600">
+              <span className="bold-16">Địa chỉ:</span> {user.address}
+            </p>
+            <div className="mt-4 flex gap-3">
+              <button className="btn-secondary" onClick={handleEditProfile}>
+                Chỉnh sửa
+              </button>
+              <button className="btn-outline" onClick={handleChangePassword}>
+                Đổi mật khẩu
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <p>Không tìm thấy thông tin người dùng.</p>
+      )}
 
       {/* Modal Chỉnh sửa thông tin */}
       {showEditModal && (

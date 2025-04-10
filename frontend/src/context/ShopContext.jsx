@@ -90,17 +90,32 @@ const ShopContextProvider = (props) => {
 
   // Update the quantity of an item in the cart
 
-  const updateQuantity = (itemId, quantity) => {
-    setCartItems(prevItems => {
-      if (quantity <= 0) {
-        return prevItems.filter(item => item._id !== itemId);
-      } else {
-        return prevItems.map(item =>
-          item._id === itemId ? { ...item, quantity } : item
-        );
-      }
-    });
+  const updateQuantity = async (productId, change) => {
+    try {
+      // Gửi request tới API để cộng/trừ quantity
+      await axios.put(
+        'http://localhost:8000/api/cart/update',
+        {
+          productId,
+          quantity: change  // Số lượng muốn tăng/giảm
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+  
+      // Sau khi update thành công, lấy lại giỏ hàng mới
+      const updatedCart = await axios.get('http://localhost:8000/api/cart', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCartItems(updatedCart.data);
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+    }
   };
+  
 
   const removeFromCart = async (productId) => {
     try {

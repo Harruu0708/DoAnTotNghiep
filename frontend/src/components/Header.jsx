@@ -60,7 +60,16 @@ const Header = () => {
 
             <div className='flex-1 flex items-center justify-end gap-x-3 sm:gap-x-10 '>
                 <CgMenuLeft onClick={toggleMenu} className='text-2xl xl:hidden cursor-pointer' />
-                <Link to={'cart'} className='flex relative'>
+                <Link
+                    to={token ? 'cart' : '#'}
+                    onClick={(e) => {
+                        if (!token) {
+                        e.preventDefault(); // Ngăn chuyển hướng nếu chưa đăng nhập
+                        navigate('/login');
+                        }
+                    }}
+                    className='flex relative'
+                >
                     <RiShoppingBag4Line className='text-[33px] bg-secondary text-primary p-1.5 rounded-full ' />
                     <span className='bg-primary ring-1 ring-slate-900/5 medium-14 absolute left-5 -top-2.5 flexCenter w-5 h-5 rounded-full shadow-md '>
                         {getCartCount()}

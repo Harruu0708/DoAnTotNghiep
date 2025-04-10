@@ -32,7 +32,7 @@ const authController = {
                 admin: user.admin
             },
             process.env.JWT_SECRET_KEY,
-            {expiresIn: '1d'},
+            {expiresIn: '15d'},
         );
     },
 
@@ -43,7 +43,7 @@ const authController = {
                 admin: user.admin
             },
             process.env.JWT_REFRESH_TOKEN_SECRET_KEY,
-            {expiresIn: '1d'}
+            {expiresIn: '365d'}
         )
     },
 

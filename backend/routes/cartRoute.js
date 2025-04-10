@@ -12,4 +12,7 @@ router.post('/add', authMiddleware.verifyToken, cartController.addToCart);
 //Xóa sản phẩm khỏi giỏ hàng
 router.delete('/remove', authMiddleware.verifyToken, cartController.removeProduct);
 
+// Cập nhật số lượng sản phẩm trong giỏ hàng
+router.put('/update', authMiddleware.verifyToken, cartController.updateCart);
+
 export default router;

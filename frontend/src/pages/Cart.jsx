@@ -29,13 +29,13 @@ const Cart = () => {
                         <p className='mb-1.5'>{item.productId.category}</p>
                         <div className='flex items-center ring-1 ring-slate-900/5 rounded-full overflow-hidden bg-primary'>
                           <button 
-                            onClick={() => updateQuantity(item._id, item.quantity - 1)} 
+                            onClick={() => updateQuantity(item.productId._id, -1)} 
                             className='p-1.5 bg-white rounded-full shadow-md'>
                             <FaMinus className='text-xs'/>
                           </button>
                           <p className='px-2'>{item.quantity}</p>
                           <button 
-                            onClick={() => updateQuantity(item._id, item.quantity + 1)} 
+                            onClick={() => updateQuantity(item.productId._id, 1)} 
                             className='p-1.5 bg-white rounded-full shadow-md'>
                             <FaPlus className='text-xs'/>
                           </button>

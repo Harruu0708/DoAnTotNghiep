@@ -46,23 +46,43 @@ const cartController = {
     
     updateCart: async (req, res) => {
         try {
-            const { productId, quantity } = req.body;
+            const { productId, quantity } = req.body; // quantity ở đây là số cần cộng thêm (có thể âm hoặc dương)
     
-            if (quantity === 0) {
-                return cartController.removeProduct(req, res);  // Xóa sản phẩm nếu quantity = 0
+            const cart = await Cart.findOne({ userId: req.user.id });
+    
+            if (!cart) return res.status(404).json({ msg: "Không tìm thấy giỏ hàng." });
+    
+            const productInCart = cart.products.find(
+                (item) => item.productId.toString() === productId
+            );
+    
+            if (!productInCart) {
+                if (quantity > 0) {
+                    // Nếu sản phẩm chưa có, thêm mới
+                    cart.products.push({ productId, quantity });
+                } else {
+                    return res.status(400).json({ msg: "Không thể giảm số lượng của sản phẩm chưa có trong giỏ." });
+                }
+            } else {
+                productInCart.quantity += quantity;
+    
+                if (productInCart.quantity <= 0) {
+                    // Xóa sản phẩm nếu số lượng mới <= 0
+                    cart.products = cart.products.filter(
+                        (item) => item.productId.toString() !== productId
+                    );
+                }
             }
     
-            const cart = await Cart.findOneAndUpdate(
-                { userId: req.user.id, 'products.productId': productId },
-                { $set: { 'products.$.quantity': quantity } },
-                { new: true }
-            ).populate('products.productId');
+            await cart.save();
+            await cart.populate('products.productId');
     
-            res.json(cart);
+            return res.json(cart);
         } catch (error) {
             return res.status(500).json({ msg: error.message });
         }
-    },    
+    },
+       
     removeProduct: async (req, res) => {
         try {
             const { productId } = req.body;

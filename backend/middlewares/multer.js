@@ -9,7 +9,16 @@ const storage = new CloudinaryStorage({
     public_id: (req, file) => `${Date.now()}-${file.originalname}`, // Tạo tên file duy nhất
   },
 });
+const userStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "users",
+    format: async (req, file) => "png",
+    public_id: (req, file) => `avatar-${Date.now()}-${file.originalname}`,
+  },
+});
+const uploadUserImage = multer({ storage: userStorage });
 const uploadText = multer().none();
 const uploadImage = multer({ storage });
 
-export { uploadText, uploadImage };
+export { uploadText, uploadImage, uploadUserImage };
