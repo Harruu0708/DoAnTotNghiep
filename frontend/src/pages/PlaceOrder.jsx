@@ -5,6 +5,8 @@ import Footer from '../components/Footer'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
+import { ShopContext } from '../context/ShopContext'
+import { useContext } from 'react'
 
 const PlaceOrder = () => {
 
@@ -18,6 +20,7 @@ const PlaceOrder = () => {
     })
     const user = useSelector((state) => state.auth.login.currentUser);
     const token = user?.accessToken;
+    const { getCartAmount, delivery_charges } = useContext(ShopContext);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -43,10 +46,47 @@ const PlaceOrder = () => {
           fetchUserInfo()
         }
     }, [token])
+
+    // Hàm gửi yêu cầu thanh toán MoMo
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
+    // Gửi yêu cầu thanh toán đến backend
+    if (method === 'momo') {
+      const totalAmount = (getCartAmount() + delivery_charges)*1000;
+      try {
+        const orderData = {
+          userId: user.others._id,
+          shippingAddress: {
+            name: userInfo.fullName,
+            phone: userInfo.phone,
+            address: userInfo.address
+          },
+          amount: totalAmount.toString(), // Số tiền thanh toán, có thể lấy từ giỏ hàng
+        };
+
+        console.log('orderData', orderData)
+        
+
+        const response = await axios.post(
+          'http://localhost:8000/api/payment/momo',
+          orderData
+        );
+
+        // Chuyển hướng đến trang thanh toán của MoMo
+        window.location.href = response.data.data.payUrl;
+      } catch (err) {
+        console.error('Lỗi khi tạo yêu cầu thanh toán MoMo:', err);
+      }
+    } else {
+      // Xử lý thanh toán khi chọn phương thức COD (Cash On Delivery)
+      // Đoạn mã xử lý thanh toán COD, bạn có thể thực hiện gửi yêu cầu tạo đơn hàng qua backend.
+      console.log('Thanh toán COD');
+    }
+  };
       
   return (
     <section className='max-padd-container'>
-      <form className='pt-28'>
+      <form className='pt-28' onSubmit={handlePlaceOrder}>
         <div className='flex flex-col xl:flex-row gap-20 xl:gap-28'>
           {/* Left */}
           <div className='flex flex-1 flex-col gap-3 text-[95%]'>
@@ -101,8 +141,8 @@ const PlaceOrder = () => {
               </h3>
               <div className='flex gap-3'>
                 <div
-                  onClick={() => setMethod('stripe')}
-                  className={`${method === 'stripe' ? 'btn-secondary' : 'btn-white'} !py-1 text-xs cursor-pointer`}
+                  onClick={() => setMethod('momo')}
+                  className={`${method === 'momo' ? 'btn-secondary' : 'btn-white'} !py-1 text-xs cursor-pointer`}
                 >
                   Momo
                 </div>
