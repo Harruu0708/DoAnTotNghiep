@@ -53,6 +53,46 @@ const orderController = {
             res.status(500).json({ message: 'Server error' });
         }
     },
+    getAllOrders: async (req, res) => {
+        try {
+            // Admin có quyền truy cập tất cả đơn hàng, không cần phải lọc theo user_id
+            const orders = await Order.find()
+                .populate('products.product_id')  // Dùng populate để lấy thông tin sản phẩm từ các sản phẩm trong đơn hàng
+                .sort({ createdAt: -1 });  // Sắp xếp đơn hàng theo thời gian tạo, từ mới nhất đến cũ nhất
+            
+            res.status(200).json(orders);
+        } catch (error) {
+            console.error('Error fetching all orders:', error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    },
+    updateOrderStatus: async (req, res) => {
+        try {
+          const orderId = req.params.id; // lấy ID từ URL
+          const { status } = req.body; // trạng thái mới
+      
+          // Kiểm tra trạng thái hợp lệ
+          const validStatuses = ['pending', 'shipping', 'delivered', 'cancelled'];
+          if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
+          }
+      
+          const updatedOrder = await Order.findByIdAndUpdate(
+            orderId,
+            { status },
+            { new: true }
+          ).populate('products.product_id'); // populate nếu cần
+      
+          if (!updatedOrder) {
+            return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+          }
+      
+          res.status(200).json({ message: 'Cập nhật trạng thái thành công', order: updatedOrder });
+        } catch (error) {
+          console.error('Error updating order status:', error);
+          res.status(500).json({ message: 'Lỗi server' });
+        }
+      },
 };
 
 export default orderController;

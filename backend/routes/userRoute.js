@@ -5,8 +5,8 @@ import { uploadUserImage } from '../middlewares/multer.js';
 
 const userRouter = express.Router();
 
-userRouter.get('/get-all', authMiddleware.verifyToken, userController.getAllUsers);
-userRouter.delete('/delete/:id', authMiddleware.verifyTokenAndAdmind, userController.delete);
+userRouter.get('/get-all', authMiddleware.verifyTokenAndAdmin, userController.getAllUsers);
+userRouter.delete('/delete/:id', authMiddleware.verifyTokenAndAdmin, userController.delete);
 userRouter.patch('/update-info', authMiddleware.verifyToken, uploadUserImage.single('avatar'), userController.updateUserInfo);
 userRouter.get('/info', authMiddleware.verifyToken, userController.getUserInfo);
 

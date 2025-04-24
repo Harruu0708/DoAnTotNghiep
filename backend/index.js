@@ -11,6 +11,7 @@ import cartRouter from './routes/cartRoute.js';
 import paymentRouter from './routes/paymentRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import reviewRouter from './routes/reviewRoute.js';
+import warehouseRouter from './routes/warehouseRoute.js';
 
 dotenv.config();
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/payment', paymentRouter);
 app.use('/api/order', orderRouter);
 app.use('/api/review', reviewRouter);
+app.use('/api/warehouse', warehouseRouter);
 
 app.listen(8000, () =>{
     console.log('Server is running on port 8000');

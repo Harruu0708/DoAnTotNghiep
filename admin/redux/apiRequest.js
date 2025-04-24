@@ -2,6 +2,7 @@ import axios from 'axios';
 import { loginStart, loginSuccess, loginFailure, setToken, removeToken } from './authSlice';
 import { useSelector } from 'react-redux';
 const BASE_URL = "http://localhost:8000";
+import { toast } from 'react-toastify';
 
 export const loginUser = async (dispatch, user, navigate) => {
     dispatch(loginStart());
@@ -13,30 +14,31 @@ export const loginUser = async (dispatch, user, navigate) => {
         });
         dispatch(loginSuccess(res.data));
         if(res.data.others.admin === true){
-            window.location.href = 'http://localhost:5174';
+            navigate('/');
+            toast.success('Đăng nhập thành công!');
         }
         else{
         navigate('/');
+        toast.error('Tài khoản không có quyền truy cập!');
         }
         
     } catch (error) {
         dispatch(loginFailure());
         console.log(error);
+        toast.error('Đăng nhập thất bại!');
     }
 };
 
-export const logoutUser = async (dispatch, navigate, token) => {
+export const logoutUser = async (dispatch, navigate) => {
     try {
         await axios.post(`${BASE_URL}/api/auth/logout`, {}, {
             withCredentials: true,
-            headers: {
-                "Authorization": `Bearer ${token}` // Gửi token trong header Authorization
-            }
         });
         dispatch(removeToken());
+        toast.success('Đăng xuất thành công!');
         navigate('/');
-        window.location.reload();
     } catch (error) {
         console.log(error);
+        toast.error('Đăng xuất thất bại!');
     }
 };

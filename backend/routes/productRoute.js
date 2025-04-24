@@ -6,7 +6,7 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // Route để thêm sản phẩm (có upload ảnh)
-router.post("/add", uploadImage.single("image"), productController.createProduct);
+router.post("/add",authMiddleware.verifyTokenAndAdmin, uploadImage.single("image"), productController.createProduct);
 
 // Route lấy danh sách sản phẩm
 router.get("/all", productController.getAllProduct);
@@ -14,6 +14,9 @@ router.get("/all", productController.getAllProduct);
 router.get("/latest", productController.getLatestProducts);
 
 router.get("/popular", productController.getPopularProducts);
+
+// Route để cập nhật sản phẩm (có upload ảnh)
+router.patch("/update/:id", authMiddleware.verifyTokenAndAdmin, productController.updateProduct);
 
 // Route lấy chi tiết một sản phẩm
 router.get("/:id", productController.getProductDetails);

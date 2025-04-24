@@ -8,6 +8,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { logoutUser } from '../../redux/apiRequest'
 import { useSelector } from 'react-redux'
+import { useNavigate } from "react-router-dom";
 
  
 
@@ -15,9 +16,10 @@ const Sidebar = () => {
 
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);  // Lấy token từ Redux store nếu có
+  const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng sau khi đăng xuất
 
   const handleLogout = () => {
-    logoutUser(dispatch, token);  // Gọi hàm logoutUser khi nhấn vào nút "Log Out"
+    logoutUser(dispatch, navigate);  // Gọi hàm logoutUser khi nhấn vào nút "Log Out"
   };
   return (
     <div className='max-sm:flexCenter max-xs:pb-3 rounded bg-white pb-3 sm:w-1/5 sm:min-h-screen'>
@@ -30,11 +32,11 @@ const Sidebar = () => {
         <div className='flex sm:flex-col gap-x-5 gap-y-8 sm:pt-10'>
             <NavLink to={'/'} className={({isActive}) => isActive ? "active-link" :"flexStart gap-x-2 sm:pl-12 p-5 medium-15 cursor-pointer h-10 rounded-xl"}>
                 <FaSquarePlus />
-                <div className='hidden lg:flex'>Add Item</div>
+                <div className='hidden lg:flex'>Thêm sản phẩm</div>
             </NavLink>
             <NavLink to={'/list'} className={({isActive}) => isActive ? "active-link" :"flexStart gap-x-2 sm:pl-12 p-5 medium-15 cursor-pointer h-10 rounded-xl"}>
                 <FaListAlt />
-                <div className='hidden lg:flex'>List</div>
+                <div className='hidden lg:flex'>Danh sách sản phẩm</div>
             </NavLink>
             <NavLink to={'/orders'} className={({isActive}) => isActive ? "active-link" :"flexStart gap-x-2 sm:pl-12 p-5 medium-15 cursor-pointer h-10 rounded-xl"}>
                 <MdFactCheck />

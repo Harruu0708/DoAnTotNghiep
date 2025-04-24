@@ -18,7 +18,7 @@ const authMiddleware = {
             return res.status(401).json({ error: 'You are not authenticated' });
         }
     },
-    verifyTokenAndAdmind: (req, res, next) => {
+    verifyTokenAndAdmin: (req, res, next) => {
         const authHeader = req.headers['authorization']; // Lấy token từ header
     
         if (!authHeader) {
@@ -33,11 +33,11 @@ const authMiddleware = {
             }
     
             // Kiểm tra quyền admin hoặc user trùng ID
-            if (user.id === req.params.id || user.admin) {
+            if (user.admin) {
                 req.user = user; // Gán thông tin user vào request để sử dụng tiếp
                 next();
             } else {
-                return res.status(403).json({ error: 'You are not allowed to delete others' });
+                return res.status(403).json({ error: 'You are not allowed. Admins only.' });
             }
         });
     }

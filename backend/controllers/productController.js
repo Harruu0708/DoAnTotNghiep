@@ -56,6 +56,26 @@ const productController = {
             return res.status(500).json({ msg: error.message });
         }
     },
+    updateProduct: async (req, res) => {
+        try {
+            const { id } = req.params;
+      
+            const updatedProduct = await Product.findByIdAndUpdate(
+              id,
+              { $set: req.body }, // chỉ update các trường có trong req.body
+              { new: true }       // trả về bản ghi sau khi cập nhật
+            );
+      
+            if (!updatedProduct) {
+              return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+            }
+      
+            res.status(200).json(updatedProduct);
+          } catch (err) {
+            console.error('Lỗi khi cập nhật sản phẩm:', err);
+            res.status(500).json({ message: 'Lỗi server' });
+          }
+    },
 
     // Phương thức tính giá sau khi áp dụng mã giảm giá
     // applyPromotionToProducts: async (req, res) => {

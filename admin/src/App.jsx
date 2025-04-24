@@ -21,7 +21,7 @@ const App = () => {
           <Sidebar />
           <Routes>
             <Route path="/" element={<PrivateRoute>
-                  <List />
+                  <Add />
                 </PrivateRoute>} />
             <Route path="/list" element={ <PrivateRoute>
                   <List />
