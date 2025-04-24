@@ -5,9 +5,12 @@ import Sidebar from './components/Sidebar'
 import Add from './pages/Add'
 import List from './pages/List'
 import Orders from './pages/Orders'
+import Login from './pages/Login'
+import PrivateRoute from './components/PrivateRoute'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+
 
 const App = () => {
   return (
@@ -17,9 +20,16 @@ const App = () => {
         <div className='mx-auto max-w-[1440px] flex flex-col sm:flex-row'>
           <Sidebar />
           <Routes>
-            <Route path="/" element={<Add/>} />
-            <Route path="/list" element={<List/>} />
-            <Route path="/orders" element={<Orders/>} />
+            <Route path="/" element={<PrivateRoute>
+                  <List />
+                </PrivateRoute>} />
+            <Route path="/list" element={ <PrivateRoute>
+                  <List />
+                </PrivateRoute>} />
+            <Route path="/orders" element={<PrivateRoute>
+                  <Orders />
+                </PrivateRoute>} />
+            <Route path="/login" element={<Login/>} />
           </Routes>
 
         </div>
@@ -29,4 +39,3 @@ const App = () => {
 }
 
 export default App
-App

@@ -10,13 +10,14 @@ import promotionRouter from './routes/promotionRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import paymentRouter from './routes/paymentRoute.js';
 import orderRouter from './routes/orderRoute.js';
+import reviewRouter from './routes/reviewRoute.js';
 
 dotenv.config();
 const app = express();
 connectDB();
 
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
     credentials: true,
 }));
 app.use(cookieParser());
@@ -31,6 +32,7 @@ app.use('/api/promotion', promotionRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/payment', paymentRouter);
 app.use('/api/order', orderRouter);
+app.use('/api/review', reviewRouter);
 
 app.listen(8000, () =>{
     console.log('Server is running on port 8000');

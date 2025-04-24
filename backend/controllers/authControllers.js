@@ -110,7 +110,41 @@ const authController = {
         res.clearCookie('refreshToken');
         refreshTokens = refreshTokens.filter(token => token !== req.cookies.refreshToken);
         res.status(200).json({msg: "Logged out"});
-    }
+    },
+
+    loginAdmin: async (req, res) => {
+        try {
+            const user = await User.findOne({ username: req.body.username });
+            if (!user) {
+                return res.status(400).json({ msg: "User not found" });
+            }
+    
+            const validPassword = await bcrypt.compare(req.body.password, user.password);
+            if (!validPassword) {
+                return res.status(400).json({ msg: "Password is incorrect" });
+            }
+    
+            if (!user.admin) {
+                return res.status(403).json({ msg: "Access denied. Not an admin user." });
+            }
+    
+            const accessToken = authController.generateAccessToken(user);
+            const refreshToken = authController.generateRefreshToken(user);
+            refreshTokens.push(refreshToken);
+    
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: false,
+                path: '/',
+                sameSite: "strict",
+            });
+    
+            const { password, ...others } = user._doc;
+            res.status(200).json({ others, accessToken });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
 
 }
 

@@ -2,7 +2,9 @@ import axios from "axios";
 import crypto from "crypto";
 import Cart from "../models/Cart.js";
 import Order from "../models/Order.js";
-import Product from "../models/Product.js"; 
+import Product from "../models/Product.js";
+import dotenv from 'dotenv'; 
+dotenv.config();
 
 const paymentController = {
     createMoMoPayment : async (req, res) => {
@@ -15,7 +17,7 @@ const paymentController = {
         var orderInfo = 'pay with MoMo';
         var partnerCode = 'MOMO';
         var redirectUrl = 'http://localhost:5173/payment-result';
-        var ipnUrl = 'https://1bed-117-6-160-164.ngrok-free.app/api/payment/momo/notify';
+        var ipnUrl = `${process.env.IPN_URL}/api/payment/momo/notify`;
         var requestType = "payWithMethod";
         var amount = req.body.amount?.toString() || '50000';;
         var orderId = partnerCode + new Date().getTime();

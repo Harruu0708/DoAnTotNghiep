@@ -26,7 +26,7 @@ const Item = ({book}) => {
               if (!token) {
                 navigate('/login');
               } else {
-                addToCart(book);
+                addToCart(book); 
               }
             }}  className='flexCenter h-8 w-8 rounded cursor-pointer hover:bg-primary'><TbShoppingBagPlus className='text-lg'/></span>
         </div>

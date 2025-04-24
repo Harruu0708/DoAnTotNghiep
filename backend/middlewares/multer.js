@@ -17,8 +17,18 @@ const userStorage = new CloudinaryStorage({
     public_id: (req, file) => `avatar-${Date.now()}-${file.originalname}`,
   },
 });
+
+const reviewStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "reviews", // Lưu vào thư mục "reviews"
+    format: async (req, file) => "png",
+    public_id: (req, file) => `review-${Date.now()}-${file.originalname}`,
+  },
+});
 const uploadUserImage = multer({ storage: userStorage });
 const uploadText = multer().none();
 const uploadImage = multer({ storage });
+const uploadReviewImage = multer({ storage: reviewStorage });
 
-export { uploadText, uploadImage, uploadUserImage };
+export { uploadText, uploadImage, uploadUserImage, uploadReviewImage };

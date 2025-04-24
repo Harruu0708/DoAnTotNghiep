@@ -50,7 +50,7 @@ const ShopContextProvider = (props) => {
             const response = await axios.post('http://localhost:8000/api/cart/add', 
             {
                 productId: book._id,
-                quantity: 1
+                quantity: 1, // Số lượng mặc định là 1 nếu không có
             }, 
             {
                 headers: {

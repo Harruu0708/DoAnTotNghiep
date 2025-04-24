@@ -5,10 +5,20 @@ import {MdFactCheck} from 'react-icons/md'
 import {BiLogOut} from 'react-icons/bi'
 import logo from '../assets/logo.png'
 import { Link, NavLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { logoutUser } from '../../redux/apiRequest'
+import { useSelector } from 'react-redux'
 
  
 
 const Sidebar = () => {
+
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);  // Lấy token từ Redux store nếu có
+
+  const handleLogout = () => {
+    logoutUser(dispatch, token);  // Gọi hàm logoutUser khi nhấn vào nút "Log Out"
+  };
   return (
     <div className='max-sm:flexCenter max-xs:pb-3 rounded bg-white pb-3 sm:w-1/5 sm:min-h-screen'>
       <div className='flex flex-col gap-y-6 max-sm:items-center sm:flex-col pt-4 sm:pt-14 '>
@@ -33,7 +43,7 @@ const Sidebar = () => {
             {/* log out */}
 
             <div>
-                <button className='flexStart gap-x-2 sm:pl-12 p-5 medium-15 cursor-pointer h-10 rounded-xl'>
+                <button onClick={handleLogout} className='flexStart gap-x-2 sm:pl-12 p-5 medium-15 cursor-pointer h-10 rounded-xl'>
                     <BiLogOut className='text-lg' />
                     <div className='hidden lg:flex'>Log Out</div>
                 </button>

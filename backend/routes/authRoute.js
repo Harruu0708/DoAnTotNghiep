@@ -6,6 +6,7 @@ const authRouter = express.Router();
 
 authRouter.post("/register", authController.register);
 authRouter.post("/login", authController.login);
+authRouter.post("/login-admin", authController.loginAdmin);
 
 //Refresh
 authRouter.post("/refresh", authController.requestRefreshToken);
