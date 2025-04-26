@@ -7,40 +7,79 @@ const orderController = {
     createOrder: async (req, res) => {
         try {
             const userId = req.user.id;
+            const { shipping_info, payment_method } = req.body;
     
-            const cart = await Cart.findOne({ userId }).populate('products.productId');
-            if (!cart || cart.products.length === 0) {
-                return res.status(400).json({ message: 'Cart is empty' });
+            // Kiểm tra phương thức thanh toán phải là COD
+            if (payment_method !== 'COD') {
+                return res.status(400).json({ message: 'Phương thức thanh toán không hợp lệ cho đơn hàng COD' });
             }
     
+            // Lấy giỏ hàng của người dùng
+            const cart = await Cart.findOne({ userId }).populate('products.productId');
+            if (!cart || cart.products.length === 0) {
+                return res.status(400).json({ message: 'Giỏ hàng trống' });
+            }
+    
+            // Kiểm tra số lượng sản phẩm và tính tổng tiền
             let total_price = 0;
-            const orderProducts = cart.products.map((item) => {
-                const productPrice = item.productId.discount_price || item.productId.price;
-                total_price += productPrice * item.quantity;
+            const orderProducts = [];
+            
+            for (const item of cart.products) {
+                const product = item.productId;
+                const quantity = item.quantity;
     
-                return {
-                    product_id: item.productId._id,
-                    quantity: item.quantity,
-                };
-            });
+                // Kiểm tra số lượng tồn kho
+                if (product.quantity < quantity) {
+                    return res.status(400).json({ 
+                        message: `Sản phẩm ${product.name} không đủ số lượng tồn kho` 
+                    });
+                }
     
+                // Cập nhật số lượng tồn kho
+                product.quantity -= quantity;
+                await product.save();
+    
+                // Thêm vào danh sách sản phẩm đơn hàng
+                orderProducts.push({
+                    product_id: product._id,
+                    quantity: quantity,
+                });
+    
+                // Tính tổng tiền (ưu tiên giá khuyến mãi nếu có)
+                const productPrice = product.discount_price || product.price;
+                total_price += productPrice * quantity;
+            }
+    
+            // Thêm phí vận chuyển (nếu có)
+            total_price += 20; // 20.000đ phí vận chuyển
+    
+            // Tạo đơn hàng mới
             const newOrder = new Order({
                 user_id: userId,
                 order_id: uuidv4(),
                 products: orderProducts,
-                total_price,
-                shipping_info: req.body.shipping_info,
-                payment_method: req.body.payment_method,
-                isPaid: false,
+                total_price: total_price,
+                status: 'pending',
+                shipping_info: shipping_info,
+                payment_method: payment_method,
+                isPaid: false, // COD nên chưa thanh toán
+                paidAt: null,
             });
     
+            // Lưu đơn hàng
             await newOrder.save();
+            
+            // Xóa giỏ hàng sau khi tạo đơn hàng thành công
             await Cart.findOneAndDelete({ userId });
     
-            res.status(201).json({ message: 'Order created successfully', order: newOrder });
+            res.status(201).json({ 
+                message: 'Tạo đơn hàng COD thành công', 
+                order: newOrder 
+            });
+    
         } catch (error) {
-            console.error('Error creating order:', error);
-            res.status(500).json({ message: 'Server error' });
+            console.error('Lỗi khi tạo đơn hàng COD:', error);
+            res.status(500).json({ message: 'Lỗi server' });
         }
     },
     getUserOrders: async (req, res) => {
@@ -76,10 +115,17 @@ const orderController = {
           if (!validStatuses.includes(status)) {
             return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
           }
+          const updateData = { status };
+      
+          // Nếu trạng thái là 'delivered', tự động set isPaid: true và paidAt: thời gian hiện tại
+          if (status === 'delivered') {
+            updateData.isPaid = true;
+            updateData.paidAt = new Date();
+          }
       
           const updatedOrder = await Order.findByIdAndUpdate(
             orderId,
-            { status },
+            updateData,
             { new: true }
           ).populate('products.product_id'); // populate nếu cần
       

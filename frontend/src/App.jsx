@@ -11,10 +11,13 @@ import Order from "./pages/Order";
 import Profile from "./pages/Profile";
 import ShopDetail from "./pages/ShopDetail";
 import AuthChecker from "./components/AuthChecker";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
     <main className='overflow-hidden bg-primary'>
+      <ToastContainer />
       <Header />
       {/* <AuthChecker /> */}
       <Routes>

@@ -75,42 +75,6 @@ const ShopDetails = () => {
     }
   };
 
-  const handleReviewChange = (e) => {
-    const { name, value } = e.target;
-    setNewReview((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmitReview = async () => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append("product", id);
-      formData.append("rating", newReview.rating);
-      formData.append("comment", newReview.comment);
-      if (newReview.image) formData.append("image", newReview.image); // Optional image
-
-      await axios.post("http://localhost:8000/api/review/create", formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      // Cập nhật lại danh sách đánh giá
-      const res = await axios.get(`http://localhost:8000/api/review/${id}`);
-      setReviews(res.data);
-
-      // Reset form
-      setNewReview({ rating: 0, comment: "", image: "" });
-    } catch (err) {
-      console.error("Lỗi khi gửi đánh giá:", err);
-    }
-  };
-
   if (loading) {
     return <h2 className="pt-28 text-center text-black-500 medium-24 pt-28">Đang tải...</h2>;
   }
@@ -175,58 +139,7 @@ const ShopDetails = () => {
           ) : (
             <p>Chưa có đánh giá nào.</p>
           )}
-        </div>
-
-        {/* Form thêm đánh giá */}
-        <div className="mt-8">
-          <h3 className="text-xl font-semibold">Thêm đánh giá của bạn</h3>
-          <form onSubmit={handleSubmitReview} className="bg-white p-6 mt-4 rounded-lg shadow-md">
-          <div>
-            <label htmlFor="rating" className="block text-lg font-medium">
-              Đánh giá (1 - 5)
-            </label>
-            <input
-              type="number"
-              name="rating"
-              min="1"
-              max="5"
-              value={newReview.rating}
-              onChange={handleReviewChange}
-              className="mt-2 w-full px-4 py-2 border rounded-md"
-            />
-          </div>
-          <div className="mt-4">
-            <label htmlFor="comment" className="block text-lg font-medium">
-              Bình luận
-            </label>
-            <textarea
-              name="comment"
-              value={newReview.comment}
-              onChange={handleReviewChange}
-              className="mt-2 w-full px-4 py-2 border rounded-md"
-              rows="4"
-            />
-          </div>
-
-          {/* Phần tải lên ảnh */}
-          <div className="mt-4">
-            <label htmlFor="image" className="block text-lg font-medium">
-              Tải ảnh (nếu có)
-            </label>
-            <input
-              type="file"
-              name="image"
-              onChange={(e) => setNewReview((prev) => ({
-                ...prev,
-                image: e.target.files[0]
-              }))}
-              className="mt-2 w-full px-4 py-2 border rounded-md"
-            />
-          </div>
-
-          <button type="submit" className="btn-secondary mt-4">Gửi đánh giá</button>
-        </form>
-        </div>        
+        </div>       
       </div>
         <Footer />
     </div>

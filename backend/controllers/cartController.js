@@ -48,9 +48,15 @@ const cartController = {
         try {
             const { productId, quantity } = req.body; // quantity ở đây là số cần cộng thêm (có thể âm hoặc dương)
     
-            const cart = await Cart.findOne({ userId: req.user.id });
+            let cart = await Cart.findOne({ userId: req.user.id });
     
-            if (!cart) return res.status(404).json({ msg: "Không tìm thấy giỏ hàng." });
+           // Nếu không tìm thấy giỏ hàng, tạo mới
+            if (!cart) {
+                cart = new Cart({
+                    userId: req.user.id,
+                    products: [],
+                });
+            }
     
             const productInCart = cart.products.find(
                 (item) => item.productId.toString() === productId

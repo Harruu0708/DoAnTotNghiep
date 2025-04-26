@@ -12,6 +12,8 @@ const PlaceOrder = () => {
 
 
     const [method, setMethod] = useState('cod')
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [userInfo, setUserInfo] = useState({
         fullName: '',
         phone: '',
@@ -20,7 +22,7 @@ const PlaceOrder = () => {
     })
     const user = useSelector((state) => state.auth.login.currentUser);
     const token = user?.accessToken;
-    const { getCartAmount, delivery_charges } = useContext(ShopContext);
+    const { getCartAmount, delivery_charges, navigate } = useContext(ShopContext);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -50,6 +52,15 @@ const PlaceOrder = () => {
     // Hàm gửi yêu cầu thanh toán MoMo
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    // Tạo object shippingInfo
+    const shippingInfo = {
+      fullname: userInfo.fullName,
+      address: userInfo.address,
+      phone: userInfo.phone,
+  };
     // Gửi yêu cầu thanh toán đến backend
     if (method === 'momo') {
       const totalAmount = (getCartAmount() + delivery_charges)*1000;
@@ -78,9 +89,33 @@ const PlaceOrder = () => {
         console.error('Lỗi khi tạo yêu cầu thanh toán MoMo:', err);
       }
     } else {
-      // Xử lý thanh toán khi chọn phương thức COD (Cash On Delivery)
-      // Đoạn mã xử lý thanh toán COD, bạn có thể thực hiện gửi yêu cầu tạo đơn hàng qua backend.
       console.log('Thanh toán COD');
+      try {
+        const orderData = {
+            shipping_info: shippingInfo,
+            payment_method: 'COD',
+        };
+
+        const response = await axios.post(
+            'http://localhost:8000/api/order/create',
+            orderData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        // Xóa giỏ hàng sau khi tạo đơn hàng thành công
+
+        // Chuyển hướng đến trang xác nhận đơn hàng
+        navigate('/order');
+    } catch (err) {
+        console.error('Lỗi khi tạo đơn hàng COD:', err);
+        setError(err.response?.data?.message || 'Có lỗi xảy ra khi tạo đơn hàng');
+    } finally {
+        setLoading(false);
+    }
     }
   };
       

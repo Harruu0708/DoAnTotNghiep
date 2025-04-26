@@ -136,7 +136,7 @@ const Orders = () => {
                   </span>
                   <select
                     className="ml-4 p-1 border rounded"
-                    value={selectedStatus}
+                    value={Object.keys(statusMap).find(key => statusMap[key] === order.status) || "Không rõ"}
                     onChange={(e) => handleChangeStatus(order._id, e.target.value)}
                   >
                     {statuses.slice(1).map((status) => (

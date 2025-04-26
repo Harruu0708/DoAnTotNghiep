@@ -3,6 +3,9 @@ import { ShopContext } from "../context/ShopContext";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Order = () => {
   const { currency } = useContext(ShopContext);
@@ -10,6 +13,13 @@ const Order = () => {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [filter, setFilter] = useState("Tất cả");
+  const [reviewingProduct, setReviewingProduct] = useState(null);
+  const [newReview, setNewReview] = useState({
+    rating: 0,
+    comment: "",
+    image: ""
+  });
+
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const token = currentUser?.accessToken;
@@ -34,6 +44,46 @@ const Order = () => {
 
     if (token) fetchOrders();
   }, [token]);
+
+  const handleReviewChange = (e) => {
+    const { name, value } = e.target;
+    setNewReview((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmitReview = async () => {
+    if (!token) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("product", reviewingProduct._id);
+      formData.append("rating", newReview.rating);
+      formData.append("comment", newReview.comment);
+      if (newReview.image) formData.append("image", newReview.image);
+
+      await axios.post("http://localhost:8000/api/review/create", formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Reset form và đóng popup review
+      setNewReview({ rating: 0, comment: "", image: "" });
+      setReviewingProduct(null);
+      toast.success("Đánh giá thành công!");
+      
+      // Có thể thêm thông báo thành công ở đây
+    } catch (error) {
+      if (error.response && error.response.status === 400 && error.response.data.message) {
+        toast.error(error.response.data.message);
+        setNewReview({ rating: 0, comment: "", image: "" });
+        setReviewingProduct(null);
+      } else {
+        toast.error('Có lỗi xảy ra khi gửi đánh giá!');
+      }
+    
+    }
+  };
 
   const convertStatus = (status) => {
     switch (status) {
@@ -69,6 +119,7 @@ const Order = () => {
     filter === "Tất cả"
       ? orders
       : orders.filter((order) => convertStatus(order.status) === filter);
+      
 
   return (
     <section className="max-padd-container py-10">
@@ -192,10 +243,91 @@ const Order = () => {
                     </div>
                     <div className="medium-16">
                       x<span className="bold-16">{item.quantity}</span>
+                      {/* Chỉ hiển thị nút review nếu đơn hàng đã giao */}
+                      {selectedOrder.status === "delivered" && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setReviewingProduct(item.product_id);
+                          }}
+                          className="ml-2 btn-secondary text-sm py-0.5 px-2"
+                        >
+                          Đánh giá
+                        </button>
+                      )}
                     </div>
                   </li>
                 ))}
               </ul>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Popup đánh giá sản phẩm */}
+      {reviewingProduct && (
+        <div className="fixed inset-0 bg-black/50 flexCenter z-50">
+          <div className="bg-white p-6 rounded shadow-md w-full max-w-[500px] mx-2 relative">
+            <button
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+              onClick={() => setReviewingProduct(null)}
+            >
+              Đóng
+            </button>
+
+            <h3 className="h3 mb-4">Đánh giá sản phẩm: {reviewingProduct.name}</h3>
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="rating" className="block text-lg font-medium">
+                  Đánh giá (1 - 5 sao)
+                </label>
+                <input
+                  type="number"
+                  name="rating"
+                  min="1"
+                  max="5"
+                  value={newReview.rating}
+                  onChange={handleReviewChange}
+                  className="mt-2 w-full px-4 py-2 border rounded-md"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="comment" className="block text-lg font-medium">
+                  Bình luận
+                </label>
+                <textarea
+                  name="comment"
+                  value={newReview.comment}
+                  onChange={handleReviewChange}
+                  className="mt-2 w-full px-4 py-2 border rounded-md"
+                  rows="4"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="image" className="block text-lg font-medium">
+                  Hình ảnh (nếu có)
+                </label>
+                <input
+                  type="file"
+                  name="image"
+                  onChange={(e) => setNewReview(prev => ({
+                    ...prev,
+                    image: e.target.files[0]
+                  }))}
+                  className="mt-2 w-full px-4 py-2 border rounded-md"
+                />
+              </div>
+
+              <button
+                onClick={handleSubmitReview}
+                className="btn-secondary w-full mt-4"
+              >
+                Gửi đánh giá
+              </button>
             </div>
           </div>
         </div>
