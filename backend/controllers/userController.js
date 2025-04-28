@@ -67,6 +67,14 @@ const userController = {
           res.status(500).json({ msg: error.message });
         }
       },
+      countUsers: async (req, res) => {
+        try {
+          const userCount = await User.countDocuments({ admin: false });
+          res.json({ totalUsers: userCount });
+        } catch (error) {
+          res.status(500).json({ msg: error.message });
+        }
+      }
       
 }
 

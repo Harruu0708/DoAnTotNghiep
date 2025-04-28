@@ -10,6 +10,8 @@ const Item = ({book}) => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const token = user?.accessToken;
 
+  const displayPrice = book.discount_price > 0 ? book.discount_price : book.price;
+
   const handleNavigate = () => {
     navigate(`/shop/${book._id}`);
   };
@@ -32,7 +34,7 @@ const Item = ({book}) => {
         </div>
         <div className='flexBetween pt-1'>
             <p className='font-bold capitalize'>{book.category}</p>
-            <h5 className='h5 text-secondaryOne pr-2'>{book.price} 000{currency}</h5>
+            <h5 className='h5 text-secondaryOne pr-2'>{displayPrice} 000{currency}</h5>
         </div>
         <p className='line-clamp-2 py-1'>{book.description}</p>
       </div>

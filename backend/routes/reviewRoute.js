@@ -4,7 +4,7 @@ import authMiddleware from '../middlewares/authMiddleware.js';
 import { uploadReviewImage } from '../middlewares/multer.js';
 
 const router = express.Router();
-
+router.get('/statistics', authMiddleware.verifyToken, reviewController.getReviewStatistics); // Lấy thống kê đánh giá
 router.get('/:productId', reviewController.getAllProductReviews); // Lấy tất cả đánh giá của sản phẩm
 router.post('/create', authMiddleware.verifyToken, uploadReviewImage.single('image'), reviewController.createReview);// Tạo đánh giá mới
 

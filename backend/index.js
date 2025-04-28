@@ -12,6 +12,7 @@ import paymentRouter from './routes/paymentRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import reviewRouter from './routes/reviewRoute.js';
 import warehouseRouter from './routes/warehouseRoute.js';
+import "./cronJob.js"
 
 dotenv.config();
 const app = express();

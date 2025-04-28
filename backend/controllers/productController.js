@@ -77,6 +77,15 @@ const productController = {
           }
     },
 
+    countProducts: async (req, res) => {
+        try {
+            const count = await Product.countDocuments();
+            res.json({ count });
+        } catch (error) {
+            return res.status(500).json({ msg: error.message });
+        }
+    },
+
     // Phương thức tính giá sau khi áp dụng mã giảm giá
     // applyPromotionToProducts: async (req, res) => {
     //     try {

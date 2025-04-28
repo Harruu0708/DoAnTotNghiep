@@ -18,6 +18,9 @@ router.get("/popular", productController.getPopularProducts);
 // Route để cập nhật sản phẩm (có upload ảnh)
 router.patch("/update/:id", authMiddleware.verifyTokenAndAdmin, productController.updateProduct);
 
+//Route để đếm số sản phẩm
+router.get("/count",authMiddleware.verifyTokenAndAdmin, productController.countProducts);
+
 // Route lấy chi tiết một sản phẩm
 router.get("/:id", productController.getProductDetails);
 

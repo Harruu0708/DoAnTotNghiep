@@ -1,29 +1,46 @@
 import Promotion from '../models/Promotion.js';
 import Product from '../models/Product.js';
+import promotionService from '../services/promotionService.js';
 
 const promotionController = {
     createPromotion: async (req, res) => {
         try {
-            const { promotion_name, discount, start_date, end_date } = req.body;
+            // Lấy dữ liệu từ body request
+            const { promotion_name, discount, start_date, end_date, description, isActive } = req.body;
+
+            // Kiểm tra nếu có thông tin cần thiết
+            if (!promotion_name || !discount || !start_date || !end_date) {
+                return res.status(400).json({ message: "Missing required fields" });
+            }
+
+            // Kiểm tra nếu discount nằm trong khoảng hợp lệ
+            if (discount < 0 || discount > 100) {
+                return res.status(400).json({ message: "Discount must be between 0 and 100" });
+            }
+
+            // Kiểm tra nếu start_date lớn hơn end_date
+            if (new Date(start_date) > new Date(end_date)) {
+                return res.status(400).json({ message: "Start date cannot be after end date" });
+            }
+
+            // Tạo đối tượng promotion mới
             const newPromotion = new Promotion({
                 promotion_name,
                 discount,
                 start_date,
-                end_date
+                end_date,
+                description,
+                isActive,
             });
-            await newPromotion.save();
 
-            // Gán promotion_id cho tất cả sản phẩm cần áp dụng mã giảm giá (có thể tùy chỉnh điều kiện)
-            // const updatedProducts = await Product.updateMany(
-            //     {},  // Điều kiện tìm kiếm các sản phẩm (ở đây là tất cả các sản phẩm)
-            //     { 
-            //         $set: { promotion_id: newPromotion._id } // Gán promotion_id cho các sản phẩm
-            //     }
-            // );
+            // Lưu vào cơ sở dữ liệu
+            const savedPromotion = await newPromotion.save();
 
-            res.json({ msg: "Created a promotion and applied it to products", newPromotion });
+            // Trả về phản hồi khi tạo thành công
+            res.status(201).json({ message: "Promotion created successfully", promotion: savedPromotion });
         } catch (error) {
-            return res.status(500).json({ msg: error.message });
+            console.error(error);
+            res.status(500).json({ message: "Server error", error });
         }
     },
 };

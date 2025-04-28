@@ -138,7 +138,138 @@ const orderController = {
           console.error('Error updating order status:', error);
           res.status(500).json({ message: 'Lỗi server' });
         }
-      },
+    },
+    countOrders: async (req, res) => {
+        try {
+            const totalOrders = await Order.countDocuments();
+            res.status(200).json({ totalOrders });
+        } catch (error) {
+            console.error('Error counting orders:', error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    },
+    getWeeklyRevenue: async (req, res) => {
+        try {
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+            // Tính doanh thu cho từng tuần trong tháng
+            const weeks = [];
+            let startOfWeek = startOfMonth;
+            let endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6); // Tính 7 ngày tiếp theo
+            
+            while (startOfWeek <= endOfMonth) {
+                // Tính doanh thu cho mỗi tuần
+                const revenueWeek = await Order.aggregate([
+                    {
+                        $match: {
+                            createdAt: { $gte: startOfWeek, $lte: endOfWeek },
+                            isPaid: true
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: { $sum: "$total_price" }
+                        }
+                    }
+                ]);
+                
+                weeks.push({
+                    startOfWeek,
+                    endOfWeek,
+                    total: revenueWeek[0]?.total || 0
+                });
+                
+                // Tiến đến tuần tiếp theo
+                startOfWeek = new Date(endOfWeek);
+                startOfWeek.setDate(startOfWeek.getDate() + 1);
+                endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+            }
+            
+            res.status(200).json({ weeklyRevenue: weeks });
+        } catch (error) {
+            console.error('Error calculating weekly revenue in month:', error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    },
+    
+    getMonthlyRevenue: async (req, res) => {
+        try {
+            const now = new Date();
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+            const endOfYear = new Date(now.getFullYear(), 12, 0);
+    
+            // Tính doanh thu cho từng tháng trong năm
+            const months = [];
+            let startOfMonth = startOfYear;
+            let endOfMonth = new Date(startOfMonth);
+            endOfMonth.setMonth(startOfMonth.getMonth() + 1);
+            
+            for (let month = 0; month < 12; month++) {
+                // Tính doanh thu cho mỗi tháng
+                const revenueMonth = await Order.aggregate([
+                    {
+                        $match: {
+                            createdAt: { $gte: startOfMonth, $lt: endOfMonth },
+                            isPaid: true
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            total: { $sum: "$total_price" }
+                        }
+                    }
+                ]);
+                
+                months.push({
+                    month: startOfMonth.getMonth() + 1, // Tháng trong năm (1-12)
+                    total: revenueMonth[0]?.total || 0
+                });
+                
+                // Tiến đến tháng tiếp theo
+                startOfMonth = new Date(endOfMonth);
+                endOfMonth = new Date(startOfMonth);
+                endOfMonth.setMonth(startOfMonth.getMonth() + 1);
+            }
+            
+            res.status(200).json({ monthlyRevenue: months });
+        } catch (error) {
+            console.error('Error calculating monthly revenue in year:', error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    },
+    
+    getYearlyRevenue: async (req, res) => {
+        try {
+            const now = new Date();
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+    
+            const revenueYear = await Order.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: startOfYear },
+                        isPaid: true
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: "$total_price" }
+                    }
+                }
+            ]);
+    
+            res.status(200).json({ revenueYear: revenueYear[0]?.total || 0 });
+        } catch (error) {
+            console.error('Error calculating yearly revenue:', error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    },
 };
 
 export default orderController;

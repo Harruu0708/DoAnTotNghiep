@@ -9,6 +9,6 @@ userRouter.get('/get-all', authMiddleware.verifyTokenAndAdmin, userController.ge
 userRouter.delete('/delete/:id', authMiddleware.verifyTokenAndAdmin, userController.delete);
 userRouter.patch('/update-info', authMiddleware.verifyToken, uploadUserImage.single('avatar'), userController.updateUserInfo);
 userRouter.get('/info', authMiddleware.verifyToken, userController.getUserInfo);
-
+userRouter.get('/count', authMiddleware.verifyTokenAndAdmin, userController.countUsers);
 
 export default userRouter;

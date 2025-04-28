@@ -83,6 +83,8 @@ const ShopDetails = () => {
     return <h2 className="pt-28 text-center text-black-500 medium-24 pt-28">{error || "Không tìm thấy sách"}</h2>;
   }
 
+  const displayPrice = book.discount_price > 0 ? book.discount_price : book.price;
+
   return (
     <div className="max-padd-container py-10">
      <div className="pt-28">
@@ -99,7 +101,7 @@ const ShopDetails = () => {
             <p className="medium-18 text-gray-600">Thể loại: {book.category}</p>
             <p className="medium-18 text-gray-600">Nhà xuất bản: {book.publisher}</p>
             <p className="medium-18 text-gray-600">Số lượng còn lại: {book.quantity}</p>
-            <p className="medium-20 text-secondary mt-4">Giá: {book.price} 000 VND</p>
+            <p className="medium-20 text-secondary mt-4">Giá: {displayPrice} 000 đ</p>
             <p className="regular-16 text-gray-700 mt-6">{book.description}</p>
 
             {/* Tăng giảm số lượng */}

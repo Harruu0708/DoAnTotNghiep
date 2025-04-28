@@ -11,7 +11,6 @@ const productSchema = new mongoose.Schema({
   description: { type: String },
   quantity: { type: Number, required: true },
   popular: { type: Boolean, default: false }, 
-  promotion_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Promotion' }, // Tham chiếu đến Promotion
 }
 ,{ timestamps: true });
 

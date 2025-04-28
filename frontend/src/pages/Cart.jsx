@@ -48,7 +48,7 @@ const Cart = () => {
                             </button>
                           </div>
                         </div>
-                        <h4 className='h4'>{item.productId.price} 000{currency}</h4>
+                        <h4 className='h4'>{((item.productId.discount_price > 0 ? item.productId.discount_price : item.productId.price) * 1000).toLocaleString('vi-VN')} {currency}</h4>
                         <TbTrash
                           onClick={() => removeFromCart(item.productId)}
                           className='cursor-pointer text-xl text-secondary' />

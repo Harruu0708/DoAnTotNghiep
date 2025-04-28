@@ -82,8 +82,12 @@ const ShopContextProvider = (props) => {
     //Get total cart amount
     const getCartAmount = () => {
       return cartItems.reduce((total, item) => {
-          return total + item.products.reduce((productTotal, product) => 
-              productTotal + product.productId.price * product.quantity, 0);
+        return total + item.products.reduce((productTotal, product) => {
+          const priceToUse = (product.productId.discount_price && product.productId.discount_price > 0)
+            ? product.productId.discount_price
+            : product.productId.price;
+          return productTotal + priceToUse * product.quantity;
+        }, 0);
       }, 0);
     };
   
