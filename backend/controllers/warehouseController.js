@@ -5,7 +5,7 @@ const warehouseController = {
     // Thêm sản phẩm vào kho
     addProductToWarehouse: async (req, res) => {
         try {
-            const { productId, importPrice, quantity } = req.body;
+            const { productId, importPrice, quantity, importDate } = req.body;
 
             // Kiểm tra dữ liệu đầu vào
             if (!productId || importPrice == null || quantity == null) {
@@ -23,12 +23,18 @@ const warehouseController = {
                 return res.status(404).json({ message: "Product not found" });
             }
 
+            // Xử lý ngày nhập kho
+            const parsedImportDate = importDate ? new Date(importDate) : new Date();
+            if (isNaN(parsedImportDate.getTime())) {
+                return res.status(400).json({ message: "Invalid import date format" });
+            }
+
             // Tạo bản ghi warehouse
             const newWarehouseEntry = new Warehouse({
                 productId,
                 importPrice,
                 quantity,
-                importDate: new Date(), // hoặc bạn có thể để mặc định
+                importDate: parsedImportDate,
             });
 
             const savedEntry = await newWarehouseEntry.save();
@@ -39,13 +45,13 @@ const warehouseController = {
             res.status(500).json({ message: "Server error", error });
         }
     },
+
     getAllWarehouseProducts: async (req, res) => {
         try {
             // Lấy danh sách tất cả warehouse, populate thông tin sản phẩm
             const warehouseProducts = await Warehouse.find()
                 .populate('productId', 'name price image') // chỉ lấy một số trường cần thiết từ Product
                 .sort({ createdAt: -1 }); // mới nhất lên trước
-
             res.status(200).json({ warehouseProducts });
         } catch (error) {
             console.error(error);

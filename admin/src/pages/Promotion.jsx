@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Promotion = () => {
     const [promotions, setPromotions] = useState([]);
@@ -40,7 +42,7 @@ const Promotion = () => {
                 description,
                 isActive,
             };
-            await axios.post(
+            const response = await axios.post(
                 "http://localhost:8000/api/promotion/create",
                 newPromotion,
                 {
@@ -49,6 +51,11 @@ const Promotion = () => {
                     },
                 }
             );
+
+            // Thêm khuyến mãi mới vào danh sách hiển thị
+            setPromotions([...promotions, response.data.promotion]);
+
+            // Reset form & đóng modal
             setShowModal(false);
             setPromotionName("");
             setDiscount("");
@@ -56,10 +63,14 @@ const Promotion = () => {
             setEndDate("");
             setDescription("");
             setIsActive(true);
+
+            toast.success("Tạo khuyến mãi thành công!");
         } catch (error) {
             console.error("Lỗi khi tạo khuyến mãi", error);
+            toast.error("Tạo khuyến mãi thất bại!");
         }
     };
+
 
     const handleDeletePromotion = async (id) => {
         try {
@@ -105,7 +116,6 @@ const Promotion = () => {
                                 <th className="border-b p-3">Giảm giá (%)</th>
                                 <th className="border-b p-3">Ngày bắt đầu</th>
                                 <th className="border-b p-3">Ngày kết thúc</th>
-                                <th className="border-b p-3">Hoạt động</th>
                                 <th className="border-b p-3">Hành động</th>
                             </tr>
                         </thead>
@@ -117,7 +127,6 @@ const Promotion = () => {
                                     <td className="border-b p-3">{promotion.discount}%</td>
                                     <td className="border-b p-3">{formatDate(promotion.start_date)}</td>
                                     <td className="border-b p-3">{formatDate(promotion.end_date)}</td>
-                                    <td className="border-b p-3">{promotion.isActive ? "Có" : "Không"}</td>
                                     <td className="border-b p-3">
                                         <button
                                             onClick={() => handleDeletePromotion(promotion._id)}
@@ -190,14 +199,6 @@ const Promotion = () => {
                                 className="w-full p-2 border rounded-md"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                            />
-                        </div>
-                        <div className="flex items-center justify-between mb-4">
-                            <label className="text-sm">Đang hoạt động?</label>
-                            <input
-                                type="checkbox"
-                                checked={isActive}
-                                onChange={() => setIsActive(!isActive)}
                             />
                         </div>
                         <div className="flex justify-between mt-4">

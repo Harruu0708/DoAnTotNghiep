@@ -105,9 +105,6 @@ const PlaceOrder = () => {
                 },
             }
         );
-
-        // Xóa giỏ hàng sau khi tạo đơn hàng thành công
-
         // Chuyển hướng đến trang xác nhận đơn hàng
         navigate('/order');
     } catch (err) {

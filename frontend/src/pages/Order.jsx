@@ -5,6 +5,8 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 
 const Order = () => {
@@ -19,6 +21,16 @@ const Order = () => {
     comment: "",
     image: ""
   });
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Nếu có query params thì xóa nó
+    if (location.search) {
+      navigate('/order', { replace: true });
+    }
+  }, []);
 
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);

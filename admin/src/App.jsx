@@ -10,6 +10,7 @@ import Review from './pages/Review'
 import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import Promotion from './pages/Promotion'
+import Warehouse from './pages/Warehouse'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -40,6 +41,9 @@ const App = () => {
                 </PrivateRoute>} />
             <Route path="/promotions" element={<PrivateRoute>
                   <Promotion />
+                </PrivateRoute>} />
+            <Route path="/warehouse" element={<PrivateRoute>
+                  <Warehouse />
                 </PrivateRoute>} />
             <Route path="/login" element={<Login/>} />
           </Routes>
