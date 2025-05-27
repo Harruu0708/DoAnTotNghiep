@@ -6,8 +6,12 @@ import { ShopContext } from '../context/ShopContext'
 import CartTotal from '../components/CartTotal'
 import Footer from '../components/Footer'
 
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 const Cart = () => {
-  const {books, navigate, currency, cartItems, removeFromCart, updateQuantity } = useContext(ShopContext)
+  const {books, navigate, currency, cartItems, removeFromCart, updateQuantity, checkProductAvailabilityBeforeCheckout } = useContext(ShopContext)
    // Tính tổng số sản phẩm thật sự trong tất cả cart
   const totalProductCount = cartItems.reduce((acc, cart) => acc + cart.products.length, 0);
 
@@ -66,7 +70,18 @@ const Cart = () => {
           <div className='flex mt-20'>
             <div className='w-full sm:w-[450px]'>
               <CartTotal />
-              <button onClick={() => navigate('/place-order')} className='btn-secondaryOne mt-7'>
+              <button onClick={async () => {
+                const result = await checkProductAvailabilityBeforeCheckout();
+                  if (result.success) {
+                    navigate('/place-order');
+                  } else {
+                    toast.error(result.message + (result.insufficientProducts?.length
+                      ? `\nChi tiết: ${result.insufficientProducts.map(p => `${p.name || 'SP'} (còn: ${p.available}, yêu cầu: ${p.requested})`).join(', ')}`
+                      : '')
+                    );
+                  }
+                  }}
+                 className='btn-secondaryOne mt-7'>
                 Thanh toán
               </button>
             </div>

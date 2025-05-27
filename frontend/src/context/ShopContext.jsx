@@ -141,8 +141,37 @@ const ShopContextProvider = (props) => {
       console.error('Error removing item from cart:', error);
     }
   };
+  const checkProductAvailabilityBeforeCheckout = async () => {
+    try {
+      // Chuẩn bị dữ liệu sản phẩm từ cartItems gửi về backend
+      const products = cartItems.flatMap(cart => 
+        cart.products.map(item => ({
+          productId: item.productId._id,
+          quantity: item.quantity,
+        }))
+      );
+
+      const response = await axios.post(
+        'http://localhost:8000/api/product/check-quantity',
+        { products },
+      );
+
+      return { success: true, message: response.data.msg };
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        return {
+          success: false,
+          message: error.response.data.msg,
+          insufficientProducts: error.response.data.insufficientProducts || [],
+        };
+      } else {
+        console.error('Lỗi kiểm tra tồn kho:', error);
+        return { success: false, message: 'Lỗi server khi kiểm tra tồn kho.' };
+      }
+    }
+  };
     
-    const contextValue = {books,currency, navigate, token, setToken,cartItems, setCartItems, addToCart, getCartCount, getCartAmount, updateQuantity, removeFromCart, delivery_charges}
+    const contextValue = {books,currency, navigate, token, setToken,cartItems, setCartItems, addToCart, getCartCount, getCartAmount, updateQuantity, removeFromCart, delivery_charges, checkProductAvailabilityBeforeCheckout}
   return (
     <ShopContext.Provider value={contextValue}>
         {props.children}

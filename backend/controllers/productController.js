@@ -129,6 +129,48 @@ const productController = {
             return res.status(500).json({ msg: error.message });
         }
     },
+    checkProductAvailability: async (req, res) => {
+        try {
+            const { products } = req.body; 
+            // products là mảng dạng [{ productId: "...", quantity: ... }, ...]
+
+            if (!products || !Array.isArray(products)) {
+                return res.status(400).json({ msg: "Danh sách sản phẩm không hợp lệ." });
+            }
+
+            const insufficientProducts = [];
+
+            for (const item of products) {
+                const product = await Product.findById(item.productId);
+                if (!product) {
+                    insufficientProducts.push({ productId: item.productId, reason: "Không tìm thấy sản phẩm." });
+                    continue;
+                }
+
+                if (product.quantity < item.quantity) {
+                    insufficientProducts.push({
+                        productId: item.productId,
+                        name: product.name,
+                        available: product.quantity,
+                        requested: item.quantity,
+                    });
+                }
+            }
+
+            if (insufficientProducts.length > 0) {
+                return res.status(400).json({
+                    msg: "Một số sản phẩm không đủ số lượng.",
+                    insufficientProducts,
+                });
+            }
+
+            return res.json({ msg: "Tất cả sản phẩm đều còn đủ số lượng." });
+
+        } catch (error) {
+            console.error("Lỗi kiểm tra tồn kho:", error);
+            return res.status(500).json({ msg: "Lỗi server khi kiểm tra tồn kho." });
+        }
+    },
 };
 
 export default productController;

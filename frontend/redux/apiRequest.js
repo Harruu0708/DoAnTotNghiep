@@ -3,6 +3,8 @@ import { loginStart, loginSuccess, loginFailure, setToken, removeToken, register
 import { useSelector } from 'react-redux';
 const BASE_URL = "http://localhost:8000";
 
+import { toast } from 'react-toastify';
+
 export const loginUser = async (dispatch, user, navigate) => {
     dispatch(loginStart());
     try {
@@ -12,16 +14,12 @@ export const loginUser = async (dispatch, user, navigate) => {
                 "Content-Type": "application/json",}
         });
         dispatch(loginSuccess(res.data));
-        if(res.data.others.admin === true){
-            window.location.href = 'http://localhost:5174';
-        }
-        else{
+        toast.success('Đăng nhập thành công!');
         navigate('/');
-        }
-        
     } catch (error) {
         dispatch(loginFailure());
         console.log(error);
+        toast.error('Đăng nhập thất bại!');
     }
 };
 
@@ -36,9 +34,11 @@ export const registerUser = async (dispatch, user, navigate) => {
         });
         dispatch(registerSuccess(res.data));
         window.location.reload();
+        toast.success('Đăng ký thành công!');
     } catch (error) {
         dispatch(registerFailure());
         console.log(error)
+        toast.error('Đăng ký thất bại!');
     }
 };
 
@@ -53,8 +53,10 @@ export const logoutUser = async (dispatch, navigate, token) => {
         });
         dispatch(removeToken());
         navigate('/');
+        toast.success('Đăng xuất thành công!');
         window.location.reload();
     } catch (error) {
         console.log(error);
+        toast.error('Đăng xuất thất bại!');
     }
 };

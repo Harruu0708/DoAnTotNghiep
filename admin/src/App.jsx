@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import Review from './pages/Review'
 import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
+import Promotion from './pages/Promotion'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -36,6 +37,9 @@ const App = () => {
                 </PrivateRoute>} />
             <Route path="/reviews" element={<PrivateRoute>
                   <Review />
+                </PrivateRoute>} />
+            <Route path="/promotions" element={<PrivateRoute>
+                  <Promotion />
                 </PrivateRoute>} />
             <Route path="/login" element={<Login/>} />
           </Routes>

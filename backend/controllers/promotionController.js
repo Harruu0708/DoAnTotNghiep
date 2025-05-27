@@ -43,6 +43,37 @@ const promotionController = {
             res.status(500).json({ message: "Server error", error });
         }
     },
+
+    // Controller để lấy danh sách khuyến mãi
+    getPromotions: async (req, res) => {
+        try {
+            const promotions = await Promotion.find(); // Lấy tất cả các khuyến mãi
+            res.status(200).json({ promotions });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Server error", error });
+        }
+    },
+
+    // Controller để xóa khuyến mãi
+    deletePromotion: async (req, res) => {
+        try {
+            const { id } = req.params; // Lấy promotionId từ params
+
+            // Tìm và xóa promotion theo id
+            const deletedPromotion = await Promotion.findByIdAndDelete(id);
+
+            // Nếu không tìm thấy promotion, trả về lỗi
+            if (!deletedPromotion) {
+                return res.status(404).json({ message: "Promotion not found" });
+            }
+
+            res.status(200).json({ message: "Promotion deleted successfully", promotion: deletedPromotion });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Server error", error });
+        }
+    },
 };
 
 export default promotionController;

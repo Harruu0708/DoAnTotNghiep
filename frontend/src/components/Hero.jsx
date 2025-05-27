@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import bg from '../assets/bg.png'
+import bg from '../assets/bg.jpg'
 import pencil from '../assets/pencil.png'
 const Hero = () => {
   return (

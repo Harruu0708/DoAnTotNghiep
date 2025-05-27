@@ -52,6 +52,10 @@ const Sidebar = () => {
                 <MdRateReview />  
                 <div className='hidden lg:flex'>Đánh giá</div>
             </NavLink>
+            <NavLink to={'/promotions'} className={({isActive}) => isActive ? "active-link" :"flexStart gap-x-2 sm:pl-12 p-5 medium-15 cursor-pointer h-10 rounded-xl"}>
+                <MdRateReview />
+                <div className='hidden lg:flex'>Khuyến mãi</div>
+            </NavLink>
             {/* log out */}
 
             <div>

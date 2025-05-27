@@ -5,40 +5,51 @@ const warehouseController = {
     // Thêm sản phẩm vào kho
     addProductToWarehouse: async (req, res) => {
         try {
-            const { productId, importDate, importPrice, quantity } = req.body;
-    
-            // Kiểm tra sự tồn tại của productId trong bảng Product
-            const existingProduct = await Product.findById(productId);
-            if (!existingProduct) {
-                return res.status(404).json({ message: "Product not found." });
+            const { productId, importPrice, quantity } = req.body;
+
+            // Kiểm tra dữ liệu đầu vào
+            if (!productId || importPrice == null || quantity == null) {
+                return res.status(400).json({ message: "Missing required fields" });
             }
-    
-            // Tạo bản ghi mới trong kho
-            const warehouseEntry = new Warehouse({
+
+            // Kiểm tra importPrice và quantity có hợp lệ không
+            if (importPrice < 0 || quantity < 0) {
+                return res.status(400).json({ message: "Import price and quantity must be non-negative" });
+            }
+
+            // Kiểm tra xem sản phẩm có tồn tại không
+            const product = await Product.findById(productId);
+            if (!product) {
+                return res.status(404).json({ message: "Product not found" });
+            }
+
+            // Tạo bản ghi warehouse
+            const newWarehouseEntry = new Warehouse({
                 productId,
-                importDate,
                 importPrice,
-                quantity
+                quantity,
+                importDate: new Date(), // hoặc bạn có thể để mặc định
             });
-    
-            await warehouseEntry.save();
-    
-            res.status(201).json({ message: "Product added to warehouse successfully.", data: warehouseEntry });
+
+            const savedEntry = await newWarehouseEntry.save();
+
+            res.status(201).json({ message: "Product added to warehouse successfully", warehouse: savedEntry });
         } catch (error) {
-            console.error("Error adding product to warehouse:", error);
-            res.status(500).json({ message: "Internal server error." });
+            console.error(error);
+            res.status(500).json({ message: "Server error", error });
         }
     },
     getAllWarehouseProducts: async (req, res) => {
         try {
+            // Lấy danh sách tất cả warehouse, populate thông tin sản phẩm
             const warehouseProducts = await Warehouse.find()
-                .populate('productId') // Lấy thông tin chi tiết sản phẩm từ bảng Product
-                .sort({ createdAt: -1 }); // Sắp xếp mới nhất lên trước (tuỳ chọn)
-    
-            res.status(200).json({ data: warehouseProducts });
+                .populate('productId', 'name price image') // chỉ lấy một số trường cần thiết từ Product
+                .sort({ createdAt: -1 }); // mới nhất lên trước
+
+            res.status(200).json({ warehouseProducts });
         } catch (error) {
-            console.error("Error fetching warehouse products:", error);
-            res.status(500).json({ message: "Internal server error." });
+            console.error(error);
+            res.status(500).json({ message: "Server error", error });
         }
     },
 };

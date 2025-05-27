@@ -7,10 +7,7 @@ import { useSelector } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS để sử dụng Toast
 
-
-
 const List = () => {
-
   const List = books
   const [products, setProducts] = useState([]) // Danh sách sản phẩm
   const [currentPage, setCurrentPage] = useState(1) // Trang hiện tại
@@ -21,7 +18,6 @@ const List = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const token = user?.accessToken;
 
-  // Gọi API để lấy sản phẩm
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -53,25 +49,22 @@ const List = () => {
 
   const handleSave = async () => {
     try {
-      // Gửi yêu cầu PATCH với token xác thực
       const response = await axios.patch(
         `http://localhost:8000/api/product/update/${editingProductId}`,
-        editForm, // Dữ liệu cần cập nhật
+        editForm,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Thêm token vào header
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-  
-      // Cập nhật sản phẩm trong danh sách sau khi nhận phản hồi thành công
+
       setProducts((prevProducts) =>
         prevProducts.map((product) =>
           product._id === editingProductId ? response.data : product
         )
       );
       toast.success("Sản phẩm đã được cập nhật thành công!");
-      // Đóng form chỉnh sửa sau khi lưu thành công
       setEditingProductId(null);
     } catch (error) {
       console.error('Lỗi khi cập nhật sản phẩm:', error);
@@ -83,12 +76,16 @@ const List = () => {
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct)
 
-  // Tính tổng số trang
   const totalPages = Math.ceil(products.length / itemsPerPage)
+
   return (
     <div className='px-2 sm:px-8 mt-4 sm:mt-14'>
+      <ToastContainer /> {/* Thêm ToastContainer để hiển thị toast */}
+
       <div className='flex flex-col gap-2'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 items-center py-1 px-2 bg-white bold-14 sm:bold-15 mb-1 rounded'>
+        {/* Tiêu đề bảng */}
+        <div className='grid grid-cols-1 sm:grid-cols-[150px_120px_1fr_1fr_100px_100px_60px] items-center py-1 px-2 bg-white bold-14 sm:bold-15 mb-1 rounded'>
+          <h5>ID</h5>
           <h5>Ảnh</h5>
           <h5>Tên</h5>
           <h5>Thể loại</h5>
@@ -100,8 +97,12 @@ const List = () => {
         {currentProducts.map((product) => (
           <div
             key={product._id}
-            className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-1 py-1 px-2 bg-white rounded-xl'
+            className='grid grid-cols-1 sm:grid-cols-[150px_120px_1fr_1fr_100px_100px_60px] gap-4 p-1 py-1 px-2 bg-white rounded-xl items-center'
           >
+            {/* ID sản phẩm */}
+            <p className='text-sm font-mono break-all'>{product._id}</p>
+
+            {/* Ảnh */}
             <img
               src={product.image}
               alt=""
@@ -151,24 +152,24 @@ const List = () => {
 
             {/* Nút Edit hoặc Save */}
             <div className='text-right md:text-center cursor-pointer text-lg'>
-            {editingProductId === product._id ? (
-              <div className="flex gap-2 justify-end text-sm">
-                <button
-                  onClick={handleSave}
-                  className="text-blue-600 underline"
-                >
-                  Lưu
-                </button>
-                <button
-                  onClick={() => setEditingProductId(null)}
-                  className="text-gray-500 underline"
-                >
-                  Hủy
-                </button>
-              </div>
-            ) : (
-              <TbEdit onClick={() => handleEditClick(product)} />
-            )}
+              {editingProductId === product._id ? (
+                <div className="flex gap-2 justify-end text-sm">
+                  <button
+                    onClick={handleSave}
+                    className="text-blue-600 underline"
+                  >
+                    Lưu
+                  </button>
+                  <button
+                    onClick={() => setEditingProductId(null)}
+                    className="text-gray-500 underline"
+                  >
+                    Hủy
+                  </button>
+                </div>
+              ) : (
+                <TbEdit onClick={() => handleEditClick(product)} />
+              )}
             </div>
           </div>
         ))}

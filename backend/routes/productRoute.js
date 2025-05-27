@@ -24,6 +24,8 @@ router.get("/count",authMiddleware.verifyTokenAndAdmin, productController.countP
 // Route lấy chi tiết một sản phẩm
 router.get("/:id", productController.getProductDetails);
 
+router.post("/check-quantity", productController.checkProductAvailability)
+
 // Route để áp dụng mã giảm giá cho sản phẩm (có thể tùy chỉnh điều kiện)
 // router.post("/apply/:promotionId", productController.applyPromotionToProducts);
 

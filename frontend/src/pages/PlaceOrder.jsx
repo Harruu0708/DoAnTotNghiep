@@ -125,7 +125,7 @@ const PlaceOrder = () => {
         <div className='flex flex-col xl:flex-row gap-20 xl:gap-28'>
           {/* Left */}
           <div className='flex flex-1 flex-col gap-3 text-[95%]'>
-            <Title title1={'Delivery'} title2={'Information'} title1Styles={'h3'} />
+            <Title title1={'Thông tin'} title2={'giao hàng'} title1Styles={'h3'} />
 
             <input
               type="text"
