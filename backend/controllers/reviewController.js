@@ -7,7 +7,7 @@ const reviewController = {
             const productId = req.params.productId;
         
             const reviews = await Review.find({ product: productId })
-              .populate("user", "username") // Chỉ lấy tên user
+              .populate("user", "username avatar")
               .sort({ createdAt: -1 }); // Mới nhất lên đầu
         
             res.status(200).json(reviews);

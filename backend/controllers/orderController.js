@@ -85,7 +85,9 @@ const orderController = {
     getUserOrders: async (req, res) => {
         try {
             const userId = req.user.id;
-            const orders = await Order.find({ user_id: userId }).populate('products.product_id');
+            const orders = await Order.find({ user_id: userId })
+                .populate('products.product_id')
+                .sort({ createdAt: -1 }); // Sắp xếp đơn hàng theo thời gian tạo, từ mới nhất đến cũ nhất
             res.status(200).json(orders);
         } catch (error) {
             console.error('Error fetching user orders:', error);

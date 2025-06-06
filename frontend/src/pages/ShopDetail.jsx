@@ -92,6 +92,35 @@ const ShopDetails = () => {
     }
   };
 
+  // Format thời gian
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // Render sao đánh giá
+  const renderStars = (rating) => {
+    return [...Array(5)].map((_, index) => (
+      <span 
+        key={index} 
+        className={`text-xl ${index < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+      >
+        ★
+      </span>
+    ));
+  };
+
+  // Tính trung bình rating
+  const averageRating = reviews.length > 0 
+    ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
+    : 0;
+
   if (loading) {
     return <h2 className="pt-28 text-center text-black-500 medium-24 pt-28">Đang tải...</h2>;
   }
@@ -145,32 +174,62 @@ const ShopDetails = () => {
           </div>
         </div>
 
-        {/* Hiển thị các đánh giá */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold">Đánh giá sản phẩm</h2>
-          {reviews.length > 0 ? (
-            reviews.map((review) => (
-              <div key={review._id} className="bg-white p-4 mb-4 rounded-lg shadow-md">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={review.image}
-                    alt={review.user.username}
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="font-bold">{review.user.username}</p>
-                    <p className="text-gray-600">{review.comment}</p>
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <span className="text-yellow-500 font-bold">{review.rating} ★</span>
-                </div>
+        {/* Đánh giá sản phẩm */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 mt-5 mb-12">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">Đánh giá sản phẩm</h2>
+              <div className="flex items-center gap-2">
+                <div className="flex">{renderStars(Math.round(averageRating))}</div>
+                <span className="text-xl font-bold text-gray-900">{averageRating}</span>
+                <span className="text-gray-500">({reviews.length} đánh giá)</span>
               </div>
-            ))
-          ) : (
-            <p>Chưa có đánh giá nào.</p>
-          )}
-        </div>
+            </div>
+
+            {reviews.length > 0 ? (
+              <div className="space-y-6">
+                {reviews.map((review) => (
+                  <div key={review._id} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <img
+                          src={review.user.avatar || review.image || '/default-avatar.png'}
+                          alt={review.user.username}
+                          className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-semibold text-gray-900">{review.user.username}</h4>
+                          <div className="flex items-center gap-1">
+                            {renderStars(review.rating)}
+                          </div>
+                          <span className="text-sm text-gray-500">
+                            {formatDate(review.createdAt)}
+                          </span>
+                        </div>
+                        {review.comment && (
+                          <p className="text-gray-700 mb-3">{review.comment}</p>
+                        )}
+                        {review.image && (
+                          <img 
+                            src={review.image} 
+                            alt="Review" 
+                            className="w-24 h-24 rounded-lg shadow-md"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-gray-400 text-6xl mb-4">📝</div>
+                <p className="text-gray-500 text-lg">Chưa có đánh giá nào cho sản phẩm này</p>
+                <p className="text-gray-400 text-sm mt-2">Hãy là người đầu tiên đánh giá sản phẩm!</p>
+              </div>
+            )}
+          </div>
         {/* Hiển thị các sản phẩm gợi ý */}
         <div className="mt-8 bg-gray-100 py-8 bg-white">
           <h2 className="text-2xl font-bold">Sản phẩm liên quan</h2>
