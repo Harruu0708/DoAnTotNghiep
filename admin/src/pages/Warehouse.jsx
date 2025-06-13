@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-const WarehousePage = () => {
+const Warehouse = () => {
   const [warehouse, setWarehouse] = useState([]);
+  const [filteredWarehouse, setFilteredWarehouse] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     productId: "",
     importPrice: "",
@@ -26,6 +28,7 @@ const WarehousePage = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWarehouse(res.data.warehouseProducts);
+      setFilteredWarehouse(res.data.warehouseProducts);
     } catch (err) {
       console.error("Error fetching warehouse:", err);
     }
@@ -34,6 +37,19 @@ const WarehousePage = () => {
   useEffect(() => {
     fetchWarehouse();
   }, []);
+
+  // Xử lý tìm kiếm
+  useEffect(() => {
+    const filtered = warehouse.filter(item =>
+      item.productId?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredWarehouse(filtered);
+    setCurrentPage(1); // Reset về trang đầu khi tìm kiếm
+  }, [searchTerm, warehouse]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,8 +80,8 @@ const WarehousePage = () => {
   // Tính toán phân trang
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentWarehouse = warehouse.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(warehouse.length / itemsPerPage);
+  const currentWarehouse = filteredWarehouse.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredWarehouse.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -117,7 +133,7 @@ const WarehousePage = () => {
             />
             <button
               type="submit"
-              className="col-span-1 md:col-span-2 lg:col-span-4 btn-dark py-3 px-6 medium-16 transition duration-200"
+              className="col-span-1 md:col-span-2 lg:col-span-4 bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-200 text-sm font-medium"
             >
               Thêm sản phẩm vào kho
             </button>
@@ -128,6 +144,17 @@ const WarehousePage = () => {
               {message}
             </div>
           )}
+        </div>
+
+        {/* Thanh tìm kiếm */}
+        <div className='mb-6'>
+          <input
+            type="text"
+            placeholder="Tìm kiếm tên sản phẩm..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-full sm:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
         </div>
 
         {/* Bảng hiển thị dữ liệu kho */}
@@ -141,7 +168,8 @@ const WarehousePage = () => {
                 <tr>
                   <th className="p-4 text-left medium-14 text-gray-800">Sản phẩm</th>
                   <th className="p-4 text-left medium-14 text-gray-800">Giá nhập</th>
-                  <th className="p-4 text-left medium-14 text-gray-800">Số lượng</th>
+                  <th className="p-4 text-left medium-14 text-gray-800">Số lượng nhập</th>
+                  <th className="p-4 text-left medium-14 text-gray-800">Số lượng còn</th>
                   <th className="p-4 text-left medium-14 text-gray-800">Ngày nhập</th>
                   <th className="p-4 text-left medium-14 text-gray-800">Ảnh</th>
                 </tr>
@@ -152,6 +180,7 @@ const WarehousePage = () => {
                     <td className="p-4 medium-14 text-gray-900">{item.productId?.name}</td>
                     <td className="p-4 regular-14 text-gray-700">{(item.importPrice * 1000)?.toLocaleString('vi-VN')} đ</td>
                     <td className="p-4 regular-14 text-gray-700">{item.quantity}</td>
+                    <td className="p-4 regular-14 text-gray-700">{item.productId?.quantity}</td>
                     <td className="p-4 regular-14 text-gray-700">{new Date(item.importDate).toLocaleDateString('vi-VN')}</td>
                     <td className="p-4">
                       <img 
@@ -162,9 +191,9 @@ const WarehousePage = () => {
                     </td>
                   </tr>
                 ))}
-                {warehouse.length === 0 && (
+                {warehouse.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="text-center py-12 text-gray-500">
+                    <td colSpan="6" className="text-center py-12 text-gray-500">
                       <div className="flexCenter flex-col">
                         <div className="w-16 h-16 bg-gray-200 rounded-full flexCenter mb-4">
                           <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,24 +205,52 @@ const WarehousePage = () => {
                       </div>
                     </td>
                   </tr>
-                )}
+                ) : currentWarehouse.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="text-center py-12 text-gray-500">
+                      <div className="flexCenter flex-col">
+                        <div className="w-16 h-16 bg-gray-200 rounded-full flexCenter mb-4">
+                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                          </svg>
+                        </div>
+                        <p className="medium-16 font-medium">Không tìm thấy sản phẩm nào</p>
+                        <p className="regular-14 text-gray-400 mt-1">Thử tìm kiếm với từ khóa khác</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : null}
               </tbody>
             </table>
           </div>
           {/* Phân trang */}
           {totalPages > 1 && (
-            <div className="flex justify-center mt-4 gap-2">
-              {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((pageNum) => (
+            <div className='flex justify-center mt-14 mb-10 gap-4'>
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                className={`btn-secondary !py-1 !px-3 ${currentPage === 1 && "opacity-50 cursor-not-allowed"}`}
+              >
+                Trước
+              </button>
+
+              {Array.from({ length: totalPages }, (_, index) => (
                 <button
-                  key={pageNum}
-                  className={`px-3 py-1 rounded-md ${
-                    pageNum === currentPage ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
-                  }`}
-                  onClick={() => handlePageChange(pageNum)}
+                  key={index + 1}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`btn-light !py-1 !px-3 ${currentPage === index + 1 && "!bg-secondaryOne"}`}
                 >
-                  {pageNum}
+                  {index + 1}
                 </button>
               ))}
+
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className={`btn-secondary !py-1 !px-3 ${currentPage === totalPages && "opacity-50 cursor-not-allowed"}`}
+              >
+                Sau
+              </button>
             </div>
           )}
         </div>
@@ -202,4 +259,4 @@ const WarehousePage = () => {
   );
 };
 
-export default WarehousePage;
+export default Warehouse;

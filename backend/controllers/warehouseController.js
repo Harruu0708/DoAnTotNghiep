@@ -50,7 +50,7 @@ const warehouseController = {
         try {
             // Lấy danh sách tất cả warehouse, populate thông tin sản phẩm
             const warehouseProducts = await Warehouse.find()
-                .populate('productId', 'name price image') // chỉ lấy một số trường cần thiết từ Product
+                .populate('productId', 'name price image quantity') // chỉ lấy một số trường cần thiết từ Product
                 .sort({ createdAt: -1 }); // mới nhất lên trước
             res.status(200).json({ warehouseProducts });
         } catch (error) {

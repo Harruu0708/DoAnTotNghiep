@@ -27,6 +27,11 @@ const ShopDetails = () => {
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const token = currentUser?.accessToken;
 
+  // Scroll to top khi id thay đổi
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
+
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
